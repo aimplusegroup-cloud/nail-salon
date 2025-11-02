@@ -1,0 +1,172 @@
+// ---------------------- GENERATOR ----------------------
+generator client {
+  provider = "prisma-client-js"
+}
+
+// ---------------------- DATASOURCE ----------------------
+datasource db {
+  provider = "sqlite" // در صورت نیاز: "postgresql" یا "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------------------- MODELS ----------------------
+
+// خدمات
+model Service {
+  id           String        @id @default(cuid())
+  name         String
+  durationMin  Int
+  price        Int
+  active       Boolean       @default(true)
+  reservations Reservation[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+// پرسنل
+model Staff {
+  id             String          @id @default(cuid())
+  name           String
+  bio            String?
+  phone          String?         @unique
+  email          String?         @unique
+  role           String?
+  skills         String?
+  avatarUrl      String?
+  employmentType EmploymentType  @default(FULLTIME)
+  baseSalary     Int?
+  commission     Float?
+  active         Boolean         @default(true)
+  reservations   Reservation[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+}
+
+enum EmploymentType {
+  FULLTIME
+  PARTTIME
+  REMOTE
+  CONTRACT
+  COMMISSION_ONLY
+}
+
+// کاربر سایت (ثبت‌نام با شماره + OTP)
+model User {
+  id            String        @id @default(cuid())
+  phone         String        @unique
+  name          String?
+  city          String?
+  // وضعیت و متادیتا
+  verifiedAt    DateTime?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  // روابط
+  reservations  Reservation[]
+  testimonials  Testimonial[]
+
+  @@index([phone])
+}
+
+// رزرو (فقط برای کاربر تأییدشده)
+model Reservation {
+  id          String            @id @default(cuid())
+  service     Service           @relation(fields: [serviceId], references: [id])
+  serviceId   String
+  staff       Staff             @relation(fields: [staffId], references: [id])
+  staffId     String
+  user        User              @relation(fields: [userId], references: [id])
+  userId      String
+  startsAt    String            // اگر تقویم جلالی/فرانت‌محور داری، String OK
+  endsAt      String            // اگر لازم شد بعداً به DateTime برگردون
+  status      ReservationStatus @default(PENDING)
+  notes       String?
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  @@index([serviceId])
+  @@index([staffId])
+  @@index([userId])
+  @@index([status, createdAt])
+}
+
+enum ReservationStatus {
+  PENDING
+  CONFIRMED
+  CANCELED
+  COMPLETED
+}
+
+// آیتم‌های گالری
+model GalleryItem {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  style       String?
+  imageUrl    String
+  tags        String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// مدیر سیستم
+model Admin {
+  id               Int       @id @default(autoincrement())
+  email            String    @unique
+  password         String
+  resetToken       String?
+  resetTokenExpiry DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+}
+
+// محتوای صفحه اصلی
+model HomeContent {
+  id        String   @id @default(cuid())
+  title     String
+  text      String?
+  imageUrl  String?
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([order, createdAt])
+}
+
+// محتوای متنی سایت
+model SiteContent {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// نظرات کاربران (متصل به User)
+model Testimonial {
+  id        String            @id @default(cuid())
+  name      String
+  text      String
+  status    TestimonialStatus @default(PENDING)
+  user      User?             @relation(fields: [userId], references: [id])
+  userId    String?
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+
+  @@index([status, createdAt])
+}
+
+enum TestimonialStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+// کدهای یکبار مصرف (OTP) برای تأیید شماره
+model OTP {
+  phone     String   @id
+  code      String
+  expiresAt DateTime
+  tries     Int      @default(0)
+  createdAt DateTime @default(now())
+}
