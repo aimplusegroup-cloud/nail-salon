@@ -40,9 +40,9 @@ async function main() {
       id: "seed-reservation",
       serviceId: "svc_manicure",
       staffId: "stf_sara",
-      userId: user.id, // 👈 هماهنگ با schema جدید
-      startsAt: "1404/08/02 10:30",
-      endsAt: "1404/08/02 11:30",
+      userId: user.id,
+      startsAt: new Date("2025-10-24T10:30:00Z"), // ✅ فرمت ISO
+      endsAt: new Date("2025-10-24T11:30:00Z"),
       status: "PENDING",
       notes: "رزرو تستی برای بررسی سیستم",
     },
@@ -83,11 +83,14 @@ async function main() {
   }
 
   // ---------------------- ادمین ----------------------
-  const hashedPassword = await bcrypt.hash("admin123", 10);
+  const email = process.env.ADMIN_EMAIL || "admin@example.com";
+  const plainPassword = process.env.ADMIN_PASSWORD || "admin123";
+  const hashedPassword = await bcrypt.hash(plainPassword, 10);
+
   await prisma.admin.upsert({
-    where: { email: "admin@example.com" },
+    where: { email },
     update: {},
-    create: { email: "admin@example.com", password: hashedPassword },
+    create: { email, password: hashedPassword },
   });
 
   console.log("✅ Seeding completed successfully!");
