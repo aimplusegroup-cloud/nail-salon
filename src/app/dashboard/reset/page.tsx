@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
-export default function ResetPasswordPage() {
+function ResetPasswordInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
@@ -35,7 +36,7 @@ export default function ResetPasswordPage() {
       const res = await fetch("/api/admin/reset", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token, password, confirmPassword }), // 👈 هر سه فیلد ارسال می‌شوند
+        body: JSON.stringify({ token, password, confirmPassword }),
       });
 
       const data = await res.json();
@@ -46,7 +47,9 @@ export default function ResetPasswordPage() {
       } else {
         setMsg(data.message || "خطا در تغییر رمز ❌");
       }
-    } catch (err) {
+    } catch (err: unknown) {
+      const errorMsg = err instanceof Error ? err.message : String(err);
+      console.error("❌ Reset password error:", errorMsg);
       setMsg("خطا در ارتباط با سرور ❌");
     } finally {
       setLoading(false);
@@ -94,5 +97,13 @@ export default function ResetPasswordPage() {
         )}
       </form>
     </div>
+  );
+}
+
+export default function ResetPasswordPage() {
+  return (
+    <Suspense fallback={<div>در حال بارگذاری...</div>}>
+      <ResetPasswordInner />
+    </Suspense>
   );
 }

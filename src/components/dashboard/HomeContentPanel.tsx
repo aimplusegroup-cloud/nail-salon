@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import toast from "react-hot-toast";
 
 interface HomeContent {
@@ -24,7 +25,6 @@ export default function HomeContentPanel() {
   const [editTitle, setEditTitle] = useState("");
   const [editText, setEditText] = useState("");
 
-  // دریافت لیست محتواها
   useEffect(() => {
     const loadData = async () => {
       try {
@@ -43,7 +43,6 @@ export default function HomeContentPanel() {
     loadData();
   }, []);
 
-  // انتخاب فایل و پیش‌نمایش
   const handleFileChange = (f: File | null) => {
     setFile(f);
     if (f) {
@@ -55,7 +54,6 @@ export default function HomeContentPanel() {
     }
   };
 
-  // افزودن آیتم جدید
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -85,7 +83,6 @@ export default function HomeContentPanel() {
     }
   };
 
-  // حذف آیتم
   const handleDelete = async (id: string) => {
     if (!confirm("آیا مطمئن هستید؟")) return;
     try {
@@ -102,14 +99,12 @@ export default function HomeContentPanel() {
     }
   };
 
-  // شروع ویرایش
   const startEdit = (item: HomeContent) => {
     setEditId(item.id);
     setEditTitle(item.title);
     setEditText(item.text || "");
   };
 
-  // ذخیره ویرایش
   const handleUpdate = async (id: string) => {
     try {
       const res = await fetch(`/api/home/${id}`, {
@@ -163,10 +158,12 @@ export default function HomeContentPanel() {
           />
           {preview && (
             <div className="relative w-20 h-16">
-              <img
+              <Image
                 src={preview}
                 alt="پیش‌نمایش"
-                className="w-20 h-16 object-cover rounded border"
+                width={80}
+                height={64}
+                className="object-cover rounded border"
               />
               <button
                 type="button"
@@ -227,11 +224,14 @@ export default function HomeContentPanel() {
               ) : (
                 <>
                   {it.imageUrl && (
-                    <img
-                      src={it.imageUrl}
-                      alt={it.title}
-                      className="w-full h-24 object-cover rounded"
-                    />
+                    <div className="relative w-full h-24">
+                      <Image
+                        src={it.imageUrl}
+                        alt={it.title}
+                        fill
+                        className="object-cover rounded"
+                      />
+                    </div>
                   )}
                   <h3 className="font-bold truncate">{it.title}</h3>
                   {it.text && (

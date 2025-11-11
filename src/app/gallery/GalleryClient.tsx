@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 
 interface GalleryItem {
   id: string;
@@ -41,10 +42,11 @@ export default function GalleryClient({ items }: { items: GalleryItem[] }) {
             className="relative w-full aspect-square overflow-hidden cursor-pointer"
             onClick={() => setSelectedIndex(idx)}
           >
-            <img
+            <Image
               src={it.imageUrl || "/sample.png"}
               alt={it.title || "نمونه کار"}
-              className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+              fill
+              className="object-cover transition-transform duration-300 hover:scale-105"
             />
           </div>
         ))}
@@ -58,10 +60,11 @@ export default function GalleryClient({ items }: { items: GalleryItem[] }) {
             className="group overflow-hidden rounded-xl shadow hover:shadow-xl transition flex flex-col bg-white"
           >
             <div className="relative w-full aspect-[4/3] overflow-hidden">
-              <img
+              <Image
                 src={it.imageUrl || "/sample.png"}
                 alt={it.title || "نمونه کار"}
-                className="absolute inset-0 w-full h-full object-cover transform transition-transform duration-500 group-hover:scale-110"
+                fill
+                className="object-cover transform transition-transform duration-500 group-hover:scale-110"
               />
             </div>
             <div className="p-3 text-center bg-white">
@@ -109,11 +112,12 @@ export default function GalleryClient({ items }: { items: GalleryItem[] }) {
             </button>
 
             {/* تصویر */}
-            <div className="bg-black flex items-center justify-center">
-              <img
+            <div className="bg-black flex items-center justify-center relative w-full h-[70vh]">
+              <Image
                 src={selected.imageUrl}
                 alt={selected.title}
-                className="max-h-[70vh] object-contain transition-transform duration-500"
+                fill
+                className="object-contain transition-transform duration-500"
               />
             </div>
 

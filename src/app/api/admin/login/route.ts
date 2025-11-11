@@ -1,13 +1,7 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcrypt";
-import { PrismaClient } from "@prisma/client";
 import jwt from "jsonwebtoken";
-
-const globalForPrisma = global as unknown as { prisma: PrismaClient };
-export const prisma =
-  globalForPrisma.prisma || new PrismaClient({ log: ["error", "warn"] });
-
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+import { prisma } from "@/lib/prisma"; // ✅ فقط import از lib
 
 export async function POST(req: Request) {
   try {
@@ -26,18 +20,17 @@ export async function POST(req: Request) {
     // 🔹 حالت ورود با Google
     if (provider === "google") {
       if (!admin) {
-        // اگر ادمین با این ایمیل وجود نداشت، بساز
         admin = await prisma.admin.create({
           data: {
             email,
-            password: "", // پسورد خالی چون ورود با گوگل است
+            password: "", // چون ورود با گوگل است
             provider: "google",
           },
         });
       }
 
       const token = jwt.sign(
-        { id: admin.id, email: admin.email },
+        { id: admin.id, email: admin.email, provider: admin.provider },
         secret,
         { expiresIn: remember ? "7d" : "1h" }
       );
@@ -58,7 +51,7 @@ export async function POST(req: Request) {
       return res;
     }
 
-    // 🔹 حالت ورود محلی (ایمیل/پسورد)
+    // 🔹 حالت ورود محلی
     if (!admin) {
       return NextResponse.json(
         { success: false, message: "مدیر یافت نشد" },
@@ -95,7 +88,7 @@ export async function POST(req: Request) {
 
     return res;
   } catch (err) {
-    console.error("Login error:", err);
+    console.error("❌ Login error:", err);
     return NextResponse.json(
       { success: false, message: "خطا در پردازش درخواست" },
       { status: 500 }

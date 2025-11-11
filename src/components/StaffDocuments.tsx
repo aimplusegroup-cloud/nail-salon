@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import toast from "react-hot-toast";
 
 interface Document {
@@ -15,7 +15,7 @@ export default function StaffDocuments({ staffId }: { staffId: string }) {
   const [file, setFile] = useState<File | null>(null);
 
   // گرفتن لیست مدارک
-  const fetchDocuments = async () => {
+  const fetchDocuments = useCallback(async () => {
     try {
       const res = await fetch(`/api/staff/${staffId}/documents`);
       const json = await res.json();
@@ -25,11 +25,11 @@ export default function StaffDocuments({ staffId }: { staffId: string }) {
     } catch {
       toast.error("خطا در دریافت مدارک");
     }
-  };
+  }, [staffId]);
 
   useEffect(() => {
     fetchDocuments();
-  }, []);
+  }, [fetchDocuments]);
 
   // افزودن مدرک
   const addDocument = async (e: React.FormEvent) => {

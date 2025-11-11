@@ -25,7 +25,9 @@ export default function AuthWithPhone({ onSuccess }: { onSuccess?: () => void })
       } else {
         setMessage(data.message || "خطا در ارسال کد");
       }
-    } catch (err) {
+    } catch (err: unknown) {
+      const errorMsg = err instanceof Error ? err.message : String(err);
+      console.error("❌ requestOtp error:", errorMsg);
       setMessage("خطای شبکه");
     } finally {
       setLoading(false);
@@ -48,7 +50,9 @@ export default function AuthWithPhone({ onSuccess }: { onSuccess?: () => void })
       } else {
         setMessage(data.message || "کد نامعتبر است");
       }
-    } catch (err) {
+    } catch (err: unknown) {
+      const errorMsg = err instanceof Error ? err.message : String(err);
+      console.error("❌ verifyOtp error:", errorMsg);
       setMessage("خطای شبکه");
     } finally {
       setLoading(false);

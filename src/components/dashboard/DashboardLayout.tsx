@@ -7,9 +7,9 @@ import StaffPanel from "./StaffPanel";
 import GalleryPanel from "./GalleryPanel";
 import StatsPanel from "./StatsPanel";
 import HomeContentPanel from "./HomeContentPanel";
-import SiteContentPanel from "./SiteContentPanel"; // مدیریت متن‌ها
-import ChangePasswordPanel from "./ChangePasswordPanel"; // تب تغییر رمز
-import LogoutButton from "./LogoutButton"; // دکمه خروج
+import SiteContentPanel from "./SiteContentPanel";
+import ChangePasswordPanel from "./ChangePasswordPanel";
+import LogoutButton from "./LogoutButton";
 
 const tabs = [
   { key: "reservations", label: "رزروها" },
@@ -18,7 +18,7 @@ const tabs = [
   { key: "gallery", label: "گالری" },
   { key: "stats", label: "گزارش‌ها" },
   { key: "home", label: "محتوای صفحه اول (عکس‌ها)" },
-  { key: "site", label: "متن‌های صفحه اول" }, // تب جدید برای SiteContent
+  { key: "site", label: "متن‌های صفحه اول" },
   { key: "change-password", label: "تغییر رمز" },
 ];
 
@@ -44,8 +44,6 @@ export default function DashboardLayout() {
             </button>
           ))}
         </div>
-
-        {/* دکمه خروج پایین سایدبار */}
         <LogoutButton />
       </aside>
 

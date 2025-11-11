@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState, useEffect } from "react";
+import Image from "next/image";
 
 type Item = {
   id: string;
@@ -41,7 +42,6 @@ export default function GalleryGrid() {
   const [query, setQuery] = useState("");
   const [activeTag, setActiveTag] = useState<string | null>(null);
 
-  // گرفتن داده‌ها از API
   useEffect(() => {
     fetch("/api/gallery", { cache: "no-store" })
       .then((res) => res.json())
@@ -52,7 +52,6 @@ export default function GalleryGrid() {
       .catch((err) => console.error("❌ Fetch /api/gallery error:", err));
   }, []);
 
-  // استخراج همه‌ی تگ‌ها
   const allTags = useMemo(() => {
     const set = new Set<string>();
     for (const item of items) {
@@ -61,7 +60,6 @@ export default function GalleryGrid() {
     return Array.from(set);
   }, [items]);
 
-  // فیلتر بر اساس جستجو و تگ فعال
   const filtered = useMemo(() => {
     const q = query.toLowerCase();
     return items.filter((item) => {
@@ -109,15 +107,16 @@ export default function GalleryGrid() {
           <div
             key={item.id}
             className="group overflow-hidden rounded-xl shadow-md hover:shadow-xl transition bg-white flex flex-col"
-            style={{ height: 320 }} // 👈 ارتفاع ثابت کارت
+            style={{ height: 320 }}
           >
             {/* تصویر با انیمیشن نرم */}
             <div className="relative w-full h-48 overflow-hidden">
-              <img
+              <Image
                 src={item.imageUrl}
                 alt={item.title}
+                fill
+                className="object-cover transform transition-transform duration-500 group-hover:scale-105"
                 loading="lazy"
-                className="absolute inset-0 w-full h-full object-cover transform transition-transform duration-500 group-hover:scale-105"
               />
             </div>
 
@@ -125,14 +124,12 @@ export default function GalleryGrid() {
             <div className="flex-1 flex flex-col justify-between px-3 py-3 text-center">
               <h3 className="font-semibold text-sm text-gray-800">{item.title}</h3>
 
-              {/* توضیح فقط اگر وجود داشته باشه */}
               {item.description && (
                 <p className="text-xs text-gray-600 mt-1 line-clamp-2">
                   {item.description}
                 </p>
               )}
 
-              {/* تگ‌ها */}
               {item.tags && (
                 <div className="flex flex-wrap gap-1 justify-center mt-2">
                   {item.tags.split(",").map((t) => (
@@ -150,7 +147,6 @@ export default function GalleryGrid() {
         ))}
       </div>
 
-      {/* پیام خالی */}
       {filtered.length === 0 && (
         <div className="p-6 text-center border rounded-lg shadow-sm bg-gray-50">
           <div className="text-pink-700 font-bold">موردی یافت نشد</div>

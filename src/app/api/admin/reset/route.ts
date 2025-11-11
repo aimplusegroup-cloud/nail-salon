@@ -1,13 +1,6 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcrypt";
-import { PrismaClient } from "@prisma/client";
-
-// استفاده از singleton برای جلوگیری از چند اتصال در حالت dev
-const globalForPrisma = global as unknown as { prisma: PrismaClient };
-export const prisma =
-  globalForPrisma.prisma || new PrismaClient({ log: ["error", "warn"] });
-
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+import { prisma } from "@/lib/prisma"; // ✅ فقط import از lib
 
 /**
  * POST /api/admin/reset

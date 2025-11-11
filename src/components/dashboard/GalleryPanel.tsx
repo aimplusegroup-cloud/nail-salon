@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import toast from "react-hot-toast";
 
 interface GalleryItem {
@@ -23,15 +24,12 @@ export default function GalleryPanel() {
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
 
-  // حالت ویرایش
   const [editId, setEditId] = useState<string | null>(null);
   const [editTitle, setEditTitle] = useState("");
   const [editDescription, setEditDescription] = useState("");
 
-  // تب فعال
   const [activeTab, setActiveTab] = useState<Tab>("upload");
 
-  // گرفتن لیست عکس‌ها
   useEffect(() => {
     const load = async () => {
       try {
@@ -52,7 +50,6 @@ export default function GalleryPanel() {
     load();
   }, []);
 
-  // پیش‌نمایش فایل
   useEffect(() => {
     if (!file) {
       setPreview(null);
@@ -63,7 +60,6 @@ export default function GalleryPanel() {
     return () => URL.revokeObjectURL(url);
   }, [file]);
 
-  // آپلود عکس جدید
   const handleUpload = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!file) {
@@ -99,7 +95,6 @@ export default function GalleryPanel() {
     }
   };
 
-  // حذف عکس
   const handleDelete = async (id: string) => {
     if (!confirm("آیا از حذف این عکس مطمئن هستید؟")) return;
     try {
@@ -117,14 +112,12 @@ export default function GalleryPanel() {
     }
   };
 
-  // شروع ویرایش
   const startEdit = (item: GalleryItem) => {
     setEditId(item.id);
     setEditTitle(item.title);
     setEditDescription(item.description || "");
   };
 
-  // ذخیره ویرایش
   const handleUpdate = async (id: string) => {
     try {
       const res = await fetch(`/api/gallery/${id}`, {
@@ -179,7 +172,7 @@ export default function GalleryPanel() {
             </div>
             <div className="card-soft p-3 flex items-center justify-center">
               {preview ? (
-                <img src={preview} alt="پیش‌نمایش" className="rounded-xl w-40 h-28 object-cover shadow" />
+                <Image src={preview} alt="پیش‌نمایش" width={160} height={112} className="rounded-xl object-cover shadow" />
               ) : (
                 <div className="text-xs text-gray-500">پیش‌نمایش فایل انتخاب‌شده اینجا نمایش داده می‌شود</div>
               )}
@@ -208,7 +201,7 @@ export default function GalleryPanel() {
               )}
               {items.map((it) => (
                 <div key={it.id} className="card p-2 flex flex-col">
-                                   {editId === it.id ? (
+                  {editId === it.id ? (
                     <>
                       <input
                         value={editTitle}
@@ -223,7 +216,7 @@ export default function GalleryPanel() {
                         rows={2}
                         placeholder="توضیحات"
                       />
-                      <div className="flex gap-2 mt-2">
+                                            <div className="flex gap-2 mt-2">
                         <button
                           onClick={() => handleUpdate(it.id)}
                           className="cta-primary flex-1"
@@ -241,12 +234,15 @@ export default function GalleryPanel() {
                   ) : (
                     <>
                       {/* Thumbnail کوچک برای داشبورد */}
-                      <img
-                        src={it.imageUrl}
-                        alt={it.title}
-                        loading="lazy"
-                        className="rounded-xl w-full h-24 object-cover"
-                      />
+                      <div className="relative w-full h-24">
+                        <Image
+                          src={it.imageUrl}
+                          alt={it.title}
+                          fill
+                          className="rounded-xl object-cover"
+                          loading="lazy"
+                        />
+                      </div>
                       <h3 className="mt-2 font-bold text-xs truncate">
                         {it.title}
                       </h3>

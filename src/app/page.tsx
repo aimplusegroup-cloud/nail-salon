@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { prisma } from "@/lib/prisma";
 import Testimonials from "@/components/Testimonials";
 import TestimonialForm from "@/components/TestimonialForm";
@@ -20,11 +21,9 @@ type FeatureProps = {
 function Feature({ title, desc, icon }: FeatureProps) {
   return (
     <div className="flex items-start gap-4 p-6 rounded-xl bg-white/95 backdrop-blur-md border border-rose-100 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all">
-      {/* آیکون */}
       <div className="flex-shrink-0 w-14 h-14 rounded-full bg-gradient-to-br from-pink-400 via-rose-500 to-rose-600 flex items-center justify-center text-white text-2xl shadow-md">
         {icon}
       </div>
-      {/* متن */}
       <div>
         <h3 className="font-extrabold text-rose-700 text-base tracking-tight">
           {title}
@@ -36,7 +35,6 @@ function Feature({ title, desc, icon }: FeatureProps) {
 }
 
 export default async function HomePage() {
-  // گرفتن داده‌ها از دیتابیس
   const [homeItems, siteContents] = await Promise.all([
     prisma.homeContent.findMany({ orderBy: { createdAt: "desc" } }),
     prisma.siteContent.findMany(),
@@ -130,11 +128,12 @@ export default async function HomePage() {
         <div className="relative">
           {homeItems.length > 0 ? (
             <>
-              <div className="gallery-item rounded-2xl overflow-hidden shadow-xl">
-                <img
+              <div className="gallery-item rounded-2xl overflow-hidden shadow-xl relative w-full h-[400px]">
+                <Image
                   src={homeItems[0].imageUrl || "/fallback-hero.png"}
                   alt={homeItems[0].title || "نمونه کار"}
-                  className="w-full h-full object-cover"
+                  fill
+                  className="object-cover"
                 />
                 <div className="gallery-overlay">
                   <div className="overlay-title text-xl font-bold">
@@ -147,12 +146,13 @@ export default async function HomePage() {
                   {homeItems.slice(1, 5).map((it) => (
                     <div
                       key={it.id}
-                      className="gallery-item rounded-xl overflow-hidden shadow"
+                      className="gallery-item rounded-xl overflow-hidden shadow relative w-full h-[200px]"
                     >
-                      <img
+                      <Image
                         src={it.imageUrl || "/fallback.png"}
                         alt={it.title || "نمونه"}
-                        className="w-full h-full object-cover"
+                        fill
+                        className="object-cover"
                       />
                       <div className="gallery-overlay">
                         <div className="overlay-title text-sm font-medium">
@@ -166,11 +166,12 @@ export default async function HomePage() {
             </>
           ) : (
             <>
-              <div className="gallery-item rounded-2xl overflow-hidden shadow-xl">
-                <img
+              <div className="gallery-item rounded-2xl overflow-hidden shadow-xl relative w-full h-[400px]">
+                <Image
                   src="/sample-hero.png"
                   alt="نمونه کار لوکس سالن ناخن رز"
-                  className="w-full h-full object-cover"
+                  fill
+                  className="object-cover"
                 />
                 <div className="gallery-overlay">
                   <div className="overlay-title text-xl font-bold">
@@ -187,12 +188,13 @@ export default async function HomePage() {
                 ].map((img, idx) => (
                   <div
                     key={idx}
-                    className="gallery-item rounded-xl overflow-hidden shadow"
+                    className="gallery-item rounded-xl overflow-hidden shadow relative w-full h-[200px]"
                   >
-                    <img
+                    <Image
                       src={img.src}
                       alt={img.alt}
-                      className="w-full h-full object-cover"
+                      fill
+                      className="object-cover"
                     />
                     <div className="gallery-overlay">
                       <div className="overlay-title text-sm font-medium">

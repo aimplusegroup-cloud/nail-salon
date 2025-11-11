@@ -21,7 +21,9 @@ export default function ForgotPasswordPage() {
 
       const data = await res.json();
       setMsg(data.message);
-    } catch (err) {
+    } catch (err: unknown) {
+      const errorMsg = err instanceof Error ? err.message : String(err);
+      console.error("❌ Forgot password error:", errorMsg);
       setMsg("خطا در ارتباط با سرور ❌");
     } finally {
       setLoading(false);

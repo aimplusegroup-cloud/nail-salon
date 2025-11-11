@@ -1,6 +1,6 @@
 import ProtectedPage from "@/components/dashboard/ProtectedPage";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import ReservationsPanel from "@/components/dashboard/ReservationsPanel"; // 👈 اضافه شد
+import ReservationsPanel from "@/components/dashboard/ReservationsPanel"; 
 import Link from "next/link";
 
 function SessionBadge({ exp }: { exp?: number }) {
@@ -23,7 +23,7 @@ export default async function DashboardPage() {
   return (
     <ProtectedPage>
       {(admin) => (
-        <DashboardLayout>
+        <>
           {/* Header */}
           <header className="flex items-center justify-between border-b px-6 py-4 bg-white">
             <div className="flex items-center gap-3">
@@ -64,7 +64,10 @@ export default async function DashboardPage() {
               <ReservationsPanel />
             </section>
           </div>
-        </DashboardLayout>
+
+          {/* کل داشبورد */}
+          <DashboardLayout />
+        </>
       )}
     </ProtectedPage>
   );

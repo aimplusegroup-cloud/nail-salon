@@ -7,10 +7,10 @@ import { prisma } from "@/lib/prisma";
  */
 export async function PUT(
   req: Request,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> } // 🔑 باید Promise باشد
 ) {
   try {
-    const { id } = params;
+    const { id } = await context.params; // 🔑 await لازم است
     const {
       name,
       bio,
@@ -47,9 +47,9 @@ export async function PUT(
       },
     });
 
-    return NextResponse.json({ success: true, staff: updated });
+    return NextResponse.json({ success: true, staff: updated }, { status: 200 });
   } catch (err) {
-    console.error("PUT /staff/[id] error:", err);
+    console.error("❌ PUT /staff/[id] error:", err);
     return NextResponse.json(
       { success: false, error: "خطا در ویرایش پرسنل" },
       { status: 500 }
@@ -62,11 +62,11 @@ export async function PUT(
  * حذف پرسنل
  */
 export async function DELETE(
-  req: Request,
-  { params }: { params: { id: string } }
+  _req: Request,
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await context.params;
 
     if (!id) {
       return NextResponse.json(
@@ -77,9 +77,9 @@ export async function DELETE(
 
     await prisma.staff.delete({ where: { id } });
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true }, { status: 200 });
   } catch (err) {
-    console.error("DELETE /staff/[id] error:", err);
+    console.error("❌ DELETE /staff/[id] error:", err);
     return NextResponse.json(
       { success: false, error: "خطا در حذف پرسنل" },
       { status: 500 }

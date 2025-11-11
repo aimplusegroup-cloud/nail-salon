@@ -5,9 +5,12 @@ import { prisma } from "@/lib/prisma";
  * PUT /api/services/[id]
  * ویرایش خدمت
  */
-export async function PUT(req: Request, { params }: { params: { id: string } }) {
+export async function PUT(
+  req: Request,
+  context: { params: Promise<{ id: string }> } // 🔑 باید Promise باشد
+) {
   try {
-    const { id } = params;
+    const { id } = await context.params; // 🔑 await لازم است
     const { name, durationMin, price } = await req.json();
 
     if (!id) {
@@ -22,9 +25,9 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
       data: { name, durationMin, price },
     });
 
-    return NextResponse.json({ success: true, service: updated });
+    return NextResponse.json({ success: true, service: updated }, { status: 200 });
   } catch (err) {
-    console.error("PUT /services/[id] error:", err);
+    console.error("❌ PUT /services/[id] error:", err);
     return NextResponse.json(
       { success: false, error: "خطا در ویرایش خدمت" },
       { status: 500 }
@@ -37,11 +40,11 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
  * حذف خدمت
  */
 export async function DELETE(
-  req: Request,
-  { params }: { params: { id: string } }
+  _req: Request,
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await context.params;
 
     if (!id) {
       return NextResponse.json(
@@ -52,9 +55,9 @@ export async function DELETE(
 
     await prisma.service.delete({ where: { id } });
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true }, { status: 200 });
   } catch (err) {
-    console.error("DELETE /services/[id] error:", err);
+    console.error("❌ DELETE /services/[id] error:", err);
     return NextResponse.json(
       { success: false, error: "خطا در حذف خدمت" },
       { status: 500 }

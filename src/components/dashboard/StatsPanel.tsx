@@ -49,8 +49,9 @@ export default function StatsPanel() {
       // API ممکن است stats یا مستقیم داده‌ها را برگرداند
       setStats(data.stats || data);
       setTrend(data.trend || []);
-    } catch (err) {
-      console.error("❌ خطا در دریافت آمار:", err);
+    } catch (err: unknown) {
+      const errorMsg = err instanceof Error ? err.message : String(err);
+      console.error("❌ خطا در دریافت آمار:", errorMsg);
       setError(true);
       toast.error("خطا در دریافت آمار");
     } finally {
@@ -157,12 +158,12 @@ export default function StatsPanel() {
             <LineChart data={trend}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="date" tick={{ fontSize: 12 }} />
-              <YAxis tickFormatter={(v) => v.toLocaleString("fa-IR")} />
+              <YAxis tickFormatter={(v: number) => v.toLocaleString("fa-IR")} />
               <Tooltip
-                formatter={(value: any) =>
+                formatter={(value: unknown) =>
                   typeof value === "number"
                     ? value.toLocaleString("fa-IR")
-                    : value
+                    : String(value)
                 }
               />
               <Legend />

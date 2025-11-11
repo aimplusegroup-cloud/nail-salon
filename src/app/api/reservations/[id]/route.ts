@@ -7,9 +7,10 @@ import { prisma } from "@/lib/prisma";
  */
 export async function PATCH(
   req: Request,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> } // 🔑 باید Promise باشه
 ) {
   try {
+    const { id } = await context.params; // 🔑 await لازم است
     const { status } = await req.json();
 
     // بررسی مقدار وضعیت
@@ -21,7 +22,7 @@ export async function PATCH(
     }
 
     const reservation = await prisma.reservation.update({
-      where: { id: params.id },
+      where: { id },
       data: { status },
       include: {
         user: true,     // 👈 جایگزین customer
@@ -30,9 +31,9 @@ export async function PATCH(
       },
     });
 
-    return NextResponse.json({ success: true, reservation });
+    return NextResponse.json({ success: true, reservation }, { status: 200 });
   } catch (err) {
-    console.error("PATCH /reservations/[id] error:", err);
+    console.error("❌ PATCH /reservations/[id] error:", err);
     return NextResponse.json(
       { success: false, error: "خطای داخلی سرور" },
       { status: 500 }
@@ -45,14 +46,17 @@ export async function PATCH(
  * حذف رزرو
  */
 export async function DELETE(
-  _: Request,
-  { params }: { params: { id: string } }
+  _req: Request,
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
-    await prisma.reservation.delete({ where: { id: params.id } });
-    return NextResponse.json({ success: true });
+    const { id } = await context.params;
+
+    await prisma.reservation.delete({ where: { id } });
+
+    return NextResponse.json({ success: true }, { status: 200 });
   } catch (err) {
-    console.error("DELETE /reservations/[id] error:", err);
+    console.error("❌ DELETE /reservations/[id] error:", err);
     return NextResponse.json(
       { success: false, error: "خطای داخلی سرور" },
       { status: 500 }

@@ -1,8 +1,8 @@
 import type { NextConfig } from "next";
-import bundleAnalyzer from "@next/bundle-analyzer";
+import createBundleAnalyzer from "@next/bundle-analyzer";
 
 // 🔍 فعال‌سازی Bundle Analyzer فقط وقتی ANALYZE=true باشه
-const withBundleAnalyzer = bundleAnalyzer({
+const withBundleAnalyzer = createBundleAnalyzer({
   enabled: process.env.ANALYZE === "true",
 });
 
@@ -47,12 +47,17 @@ const nextConfig: NextConfig = {
   images: {
     formats: ["image/avif", "image/webp"],
     domains: [
-      "your-new-domain.com",   // ✅ دامنه اصلی سایت جدید
-      "localhost",             // برای توسعه لوکال
+      "your-new-domain.com",     // ✅ دامنه اصلی سایت جدید
+      "localhost",               // برای توسعه لوکال
       "cdn.your-new-domain.com", // اگر CDN یا استوریج خارجی داری
       "trustseal.new-enamad.ir", // ✅ لوگوی اینماد جدید
       "new-enamad.ir",           // ✅ دامنه اینماد جدید
     ],
+  },
+
+  // 🔧 تنظیمات آزمایشی (برای lightningcss)
+  experimental: {
+    optimizeCss: false, // اگر lightningcss خطا داد، این رو false بذار
   },
 
   // اضافه کردن هدرهای امنیتی

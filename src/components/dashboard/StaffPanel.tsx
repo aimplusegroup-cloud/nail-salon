@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import toast from "react-hot-toast";
 
 interface Staff {
@@ -34,7 +35,6 @@ export default function StaffPanel() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editForm, setEditForm] = useState<Partial<Staff>>(form);
 
-  // گرفتن لیست پرسنل
   const fetchStaff = async () => {
     try {
       const res = await fetch("/api/staff", { cache: "no-store" });
@@ -49,7 +49,6 @@ export default function StaffPanel() {
     fetchStaff();
   }, []);
 
-  // افزودن پرسنل
   const addStaff = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -82,7 +81,6 @@ export default function StaffPanel() {
     }
   };
 
-  // حذف پرسنل
   const deleteStaff = async (id: string) => {
     if (!confirm("آیا از حذف این پرسنل مطمئن هستید؟")) return;
     try {
@@ -99,13 +97,11 @@ export default function StaffPanel() {
     }
   };
 
-  // شروع ویرایش
   const startEdit = (st: Staff) => {
     setEditingId(st.id);
     setEditForm(st);
   };
 
-  // ذخیره ویرایش
   const saveEdit = async (id: string) => {
     try {
       const res = await fetch(`/api/staff/${id}`, {
@@ -163,8 +159,8 @@ export default function StaffPanel() {
             }`}
           >
             {editingId === st.id ? (
-              // فرم ویرایش
               <div className="grid grid-cols-2 md:grid-cols-3 gap-2 p-3 text-sm">
+                {/* فیلدهای ویرایش */}
                 <input value={editForm.name || ""} onChange={(e) => setEditForm({ ...editForm, name: e.target.value })} className="input" placeholder="نام" />
                 <input value={editForm.bio || ""} onChange={(e) => setEditForm({ ...editForm, bio: e.target.value })} className="input" placeholder="توضیحات" />
                 <input value={editForm.phone || ""} onChange={(e) => setEditForm({ ...editForm, phone: e.target.value })} className="input" placeholder="شماره تماس" />
@@ -179,70 +175,71 @@ export default function StaffPanel() {
                   <option value="COMMISSION_ONLY">فقط پورسانتی</option>
                 </select>
                 <input type="number" value={editForm.baseSalary ?? ""} onChange={(e) => setEditForm({ ...editForm, baseSalary: e.target.value ? +e.target.value : undefined })} className="input" placeholder="حقوق ثابت" />
-                                <input
-                  type="number"
-                  value={editForm.commission ?? ""}
-                  onChange={(e) =>
-                    setEditForm({
-                      ...editForm,
-                      commission: e.target.value
-                        ? +e.target.value
-                        : undefined,
-                    })
-                  }
-                  className="input"
-                  placeholder="پورسانت (%)"
-                />
+                                  <input
+                    type="number"
+                    value={editForm.commission ?? ""}
+                    onChange={(e) =>
+                      setEditForm({
+                        ...editForm,
+                        commission: e.target.value
+                          ? +e.target.value
+                          : undefined,
+                      })
+                    }
+                    className="input"
+                    placeholder="پورسانت (%)"
+                  />
 
-                {/* دکمه‌های ذخیره و انصراف */}
-                <div className="col-span-2 md:col-span-3 flex gap-2 mt-3">
-                  <button
-                    onClick={() => saveEdit(st.id)}
-                    className="cta-primary flex-1"
-                  >
-                    ذخیره
-                  </button>
-                  <button
-                    onClick={() => setEditingId(null)}
-                    className="cta-secondary flex-1"
-                  >
-                    انصراف
-                  </button>
-                </div>
-              </div>
-            ) : (
-              // حالت نمایش مربعی با عکس
-              <div className="aspect-square w-full relative overflow-hidden rounded-lg">
-                <img
-                  src={st.avatarUrl || "/default-avatar.png"}
-                  alt={st.name}
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition flex flex-col items-center justify-center text-white text-center p-2">
-                  <h3 className="font-bold text-sm">{st.name}</h3>
-                  {st.role && <p className="text-xs">{st.role}</p>}
-                  {st.phone && <p className="text-xs">📞 {st.phone}</p>}
-                  {st.email && <p className="text-xs">✉️ {st.email}</p>}
-                  <div className="flex gap-2 mt-2">
+                  {/* دکمه‌های ذخیره و انصراف */}
+                  <div className="col-span-2 md:col-span-3 flex gap-2 mt-3">
                     <button
-                      onClick={() => startEdit(st)}
-                      className="cta-secondary text-xs px-2 py-1"
+                      onClick={() => saveEdit(st.id)}
+                      className="cta-primary flex-1"
                     >
-                      ویرایش
+                      ذخیره
                     </button>
                     <button
-                      onClick={() => deleteStaff(st.id)}
-                      className="cta-secondary bg-rose-500 text-white text-xs px-2 py-1"
+                      onClick={() => setEditingId(null)}
+                      className="cta-secondary flex-1"
                     >
-                      حذف
+                      انصراف
                     </button>
                   </div>
                 </div>
-              </div>
-            )}
-          </div>
-        ))}
+              ) : (
+                // حالت نمایش مربعی با عکس
+                <div className="aspect-square w-full relative overflow-hidden rounded-lg">
+                  <Image
+                    src={st.avatarUrl || "/default-avatar.png"}
+                    alt={st.name}
+                    fill
+                    className="object-cover"
+                  />
+                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition flex flex-col items-center justify-center text-white text-center p-2">
+                    <h3 className="font-bold text-sm">{st.name}</h3>
+                    {st.role && <p className="text-xs">{st.role}</p>}
+                    {st.phone && <p className="text-xs">📞 {st.phone}</p>}
+                    {st.email && <p className="text-xs">✉️ {st.email}</p>}
+                    <div className="flex gap-2 mt-2">
+                      <button
+                        onClick={() => startEdit(st)}
+                        className="cta-secondary text-xs px-2 py-1"
+                      >
+                        ویرایش
+                      </button>
+                      <button
+                        onClick={() => deleteStaff(st.id)}
+                        className="cta-secondary bg-rose-500 text-white text-xs px-2 py-1"
+                      >
+                        حذف
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
-  );
+    );
 }

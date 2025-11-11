@@ -6,11 +6,13 @@ import path from "path";
 // ---------------------- GET → دریافت یک آیتم ----------------------
 export async function GET(
   _req: Request,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> } // 🔑 در Next.js 15 باید Promise باشد
 ) {
   try {
+    const { id } = await context.params; // 🔑 await لازم است
+
     const item = await prisma.homeContent.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
 
     if (!item) {
@@ -20,7 +22,7 @@ export async function GET(
       );
     }
 
-    return NextResponse.json(item);
+    return NextResponse.json(item, { status: 200 });
   } catch (err) {
     console.error("❌ GET /api/home/[id] error:", err);
     return NextResponse.json(
@@ -33,12 +35,13 @@ export async function GET(
 // ---------------------- PUT → ویرایش آیتم ----------------------
 export async function PUT(
   req: Request,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await context.params;
     const body = await req.json();
 
-    if (!params.id) {
+    if (!id) {
       return NextResponse.json(
         { success: false, message: "شناسه معتبر نیست" },
         { status: 400 }
@@ -46,16 +49,16 @@ export async function PUT(
     }
 
     const updated = await prisma.homeContent.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         title: body.title,
         text: body.text,
-        imageUrl: body.imageUrl, // 👈 تغییر نام یا مسیر عکس
+        imageUrl: body.imageUrl,
         order: body.order ?? undefined,
       },
     });
 
-    return NextResponse.json({ success: true, item: updated });
+    return NextResponse.json({ success: true, item: updated }, { status: 200 });
   } catch (err) {
     console.error("❌ PUT /api/home/[id] error:", err);
     return NextResponse.json(
@@ -68,10 +71,10 @@ export async function PUT(
 // ---------------------- DELETE → حذف آیتم ----------------------
 export async function DELETE(
   _req: Request,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await context.params;
 
     if (!id) {
       return NextResponse.json(
@@ -80,7 +83,6 @@ export async function DELETE(
       );
     }
 
-    // بررسی وجود آیتم
     const item = await prisma.homeContent.findUnique({ where: { id } });
     if (!item) {
       return NextResponse.json(
@@ -89,9 +91,8 @@ export async function DELETE(
       );
     }
 
-    // حذف فایل تصویر در صورت وجود
     if (item.imageUrl) {
-      const safePath = item.imageUrl.replace(/^\/+/, ""); // حذف اسلش‌های اول
+      const safePath = item.imageUrl.replace(/^\/+/, "");
       const filePath = path.join(process.cwd(), "public", safePath);
 
       try {
@@ -102,10 +103,9 @@ export async function DELETE(
       }
     }
 
-    // حذف رکورد از دیتابیس
     const deleted = await prisma.homeContent.delete({ where: { id } });
 
-    return NextResponse.json({ success: true, item: deleted });
+    return NextResponse.json({ success: true, item: deleted }, { status: 200 });
   } catch (err) {
     console.error("❌ DELETE /api/home/[id] error:", err);
     return NextResponse.json(

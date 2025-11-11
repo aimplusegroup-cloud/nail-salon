@@ -1,7 +1,6 @@
-// middleware.ts
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
 
 export function middleware(req: NextRequest) {
   const url = new URL(req.url);
@@ -15,7 +14,10 @@ export function middleware(req: NextRequest) {
 
   // گرفتن کوکی
   const token = req.cookies.get("admin_token")?.value;
-  console.log("🔑 TOKEN FROM COOKIE:", token ? token.slice(0, 25) + "..." : "NO TOKEN");
+  console.log(
+    "🔑 TOKEN FROM COOKIE:",
+    token ? token.slice(0, 25) + "..." : "NO TOKEN"
+  );
 
   if (!token) {
     console.log("❌ No token found → redirect to /dashboard/login");
@@ -26,8 +28,17 @@ export function middleware(req: NextRequest) {
     const secret = process.env.JWT_SECRET;
     if (!secret) throw new Error("Missing JWT_SECRET");
 
-    const decoded = jwt.verify(token, secret);
+    // استفاده از JwtPayload برای تایپ دقیق
+    const decoded = jwt.verify(token, secret) as JwtPayload & {
+      provider?: string;
+    };
+
     console.log("✅ JWT VERIFIED:", decoded);
+
+    // اگر بخواهی provider را هم بررسی کنی:
+    if (decoded.provider) {
+      console.log("🔹 Login provider:", decoded.provider);
+    }
 
     return NextResponse.next();
   } catch (err) {

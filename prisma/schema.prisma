@@ -56,19 +56,18 @@ model User {
   phone         String        @unique
   name          String?
   city          String?
-  // وضعیت و متادیتا
   verifiedAt    DateTime?
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
 
-  // روابط
   reservations  Reservation[]
   testimonials  Testimonial[]
+  notifications Notification[]
 
   @@index([phone])
 }
 
-// رزرو (فقط برای کاربر تأییدشده)
+// رزرو
 model Reservation {
   id          String            @id @default(cuid())
   service     Service           @relation(fields: [serviceId], references: [id])
@@ -77,8 +76,8 @@ model Reservation {
   staffId     String
   user        User              @relation(fields: [userId], references: [id])
   userId      String
-  startsAt    String            // اگر تقویم جلالی/فرانت‌محور داری، String OK
-  endsAt      String            // اگر لازم شد بعداً به DateTime برگردون
+  startsAt    String
+  endsAt      String
   status      ReservationStatus @default(PENDING)
   notes       String?
   createdAt   DateTime          @default(now())
@@ -114,6 +113,7 @@ model Admin {
   id               Int       @id @default(autoincrement())
   email            String    @unique
   password         String
+  provider         String?   // 👈 اضافه شد برای ورود با گوگل یا سایر روش‌ها
   resetToken       String?
   resetTokenExpiry DateTime?
   createdAt        DateTime  @default(now())
@@ -142,7 +142,7 @@ model SiteContent {
   updatedAt DateTime @updatedAt
 }
 
-// نظرات کاربران (متصل به User)
+// نظرات کاربران
 model Testimonial {
   id        String            @id @default(cuid())
   name      String
@@ -162,11 +162,22 @@ enum TestimonialStatus {
   REJECTED
 }
 
-// کدهای یکبار مصرف (OTP) برای تأیید شماره
+// کدهای OTP
 model OTP {
   phone     String   @id
   code      String
   expiresAt DateTime
   tries     Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
+// نوتیفیکیشن‌ها
+model Notification {
+  id        String   @id @default(cuid())
+  title     String
+  message   String
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id])
+  read      Boolean  @default(false)
   createdAt DateTime @default(now())
 }

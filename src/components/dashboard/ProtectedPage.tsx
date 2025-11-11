@@ -16,18 +16,14 @@ export default async function ProtectedPage({
 }) {
   const token = (await cookies()).get("admin_token")?.value;
 
-  // اگر کوکی وجود نداشت → ریدایرکت به لاگین
   if (!token) {
     redirect("/dashboard/login");
   }
 
   try {
     const admin = jwt.verify(token!, process.env.JWT_SECRET!) as AdminPayload;
-
-    // اگر توکن معتبر بود → children با اطلاعات مدیر
     return <>{children(admin)}</>;
   } catch {
-    // اگر توکن نامعتبر یا منقضی شده بود → ریدایرکت به لاگین
     redirect("/dashboard/login");
   }
 }
