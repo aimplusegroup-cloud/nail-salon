@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Toaster } from "react-hot-toast";
 
 export const metadata: Metadata = {
-  title: "سالن ناخن رز | رزرو آنلاین و گالری لوکس",
+  title: "سالن ناخن نازی | رزرو آنلاین و گالری لوکس",
   description:
     "تجربه‌ای لوکس از خدمات مانیکور، پدیکور و طراحی ناخن با رزرو آنلاین و گالری حرفه‌ای.",
 };
@@ -30,7 +30,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-pink-400 to-rose-600 shadow-md" />
               <div className="flex flex-col leading-tight">
                 <span className="text-lg font-extrabold text-pink-600 tracking-wide">
-                  سالن ناخن رز
+                  سالن ناخن نازی
                 </span>
                 <span className="text-xs text-gray-500">
                   زیبایی لوکس | مانیکور و طراحی حرفه‌ای
@@ -68,7 +68,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 new Date()
               )}
             </span>{" "}
-            سالن ناخن رز — تمامی حقوق محفوظ است
+            سالن ناخن نازی — تمامی حقوق محفوظ است
           </div>
         </footer>
 
