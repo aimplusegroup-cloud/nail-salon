@@ -54,7 +54,7 @@ export default async function HomePage() {
             {getText("hero_badge", "لوکس و حرفه‌ای")}
           </span>
           <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-br from-rose-700 to-pink-600">
-            {getText("hero_title", "سالن ناخن رز")}
+            {getText("hero_title", "سالن ناخن نازی")}
           </h1>
           <p className="section-subtitle text-gray-700 leading-8">
             {getText(
@@ -287,7 +287,7 @@ export default async function HomePage() {
 
         {/* کپی‌رایت */}
         <div className="text-center text-xs text-gray-500 border-t border-rose-100 py-4">
-          © {new Date().getFullYear()} سالن ناخن رز — همه حقوق محفوظ است
+          © {new Date().getFullYear()} سالن ناخن نازی — همه حقوق محفوظ است
         </div>
       </footer>
     </section>
