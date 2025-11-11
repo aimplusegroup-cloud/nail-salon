@@ -5,7 +5,7 @@ generator client {
 
 // ---------------------- DATASOURCE ----------------------
 datasource db {
-  provider = "sqlite" // در صورت نیاز: "postgresql" یا "mysql"
+  provider = "postgresql"   // ✅ تغییر به Postgres برای دیپلوی ابری
   url      = env("DATABASE_URL")
 }
 
@@ -50,7 +50,7 @@ enum EmploymentType {
   COMMISSION_ONLY
 }
 
-// کاربر سایت (ثبت‌نام با شماره + OTP)
+// کاربر سایت
 model User {
   id            String        @id @default(cuid())
   phone         String        @unique
@@ -76,8 +76,8 @@ model Reservation {
   staffId     String
   user        User              @relation(fields: [userId], references: [id])
   userId      String
-  startsAt    String
-  endsAt      String
+  startsAt    DateTime          // ✅ تغییر از String به DateTime
+  endsAt      DateTime          // ✅ تغییر از String به DateTime
   status      ReservationStatus @default(PENDING)
   notes       String?
   createdAt   DateTime          @default(now())
@@ -113,7 +113,7 @@ model Admin {
   id               Int       @id @default(autoincrement())
   email            String    @unique
   password         String
-  provider         String?   // 👈 اضافه شد برای ورود با گوگل یا سایر روش‌ها
+  provider         String?   // ورود با گوگل یا سایر روش‌ها
   resetToken       String?
   resetTokenExpiry DateTime?
   createdAt        DateTime  @default(now())
