@@ -32,7 +32,6 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
-    "@tailwindcss/postcss": "^4.1.15",
     "@types/bcrypt": "^6.0.0",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^20",
@@ -41,9 +40,9 @@
     "autoprefixer": "^10.4.21",
     "eslint": "^9",
     "eslint-config-next": "15.5.6",
-    "postcss": "^8.5.6",
+    "postcss": "^8.4.31",
     "prisma": "^6.17.1",
-    "tailwindcss": "^4.1.15",
+    "tailwindcss": "^3.4.13",
     "ts-node": "^10.9.2",
     "typescript": "^5"
   },
