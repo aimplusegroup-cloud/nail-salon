@@ -34,33 +34,22 @@ const securityHeaders = [
 
 // ⚙️ Next.js Config
 const nextConfig: NextConfig = {
-  // خروجی سبک‌تر برای Vercel یا Docker
   output: "standalone",
-
-  // جلوگیری از تولید sourcemap در production
   productionBrowserSourceMaps: false,
-
-  // فعال کردن React Strict Mode
   reactStrictMode: true,
-
-  // بهینه‌سازی تصاویر
   images: {
     formats: ["image/avif", "image/webp"],
     domains: [
-      "your-new-domain.com",     // ✅ دامنه اصلی سایت جدید
-      "localhost",               // برای توسعه لوکال
-      "cdn.your-new-domain.com", // اگر CDN یا استوریج خارجی داری
-      "trustseal.new-enamad.ir", // ✅ لوگوی اینماد جدید
-      "new-enamad.ir",           // ✅ دامنه اینماد جدید
+      "your-new-domain.com",
+      "localhost",
+      "cdn.your-new-domain.com",
+      "trustseal.new-enamad.ir",
+      "new-enamad.ir",
     ],
   },
-
-  // 🔧 تنظیمات آزمایشی (برای lightningcss)
   experimental: {
-    optimizeCss: false, // اگر lightningcss خطا داد، این رو false بذار
+    optimizeCss: false,
   },
-
-  // اضافه کردن هدرهای امنیتی
   async headers() {
     return [
       {

@@ -1,7 +1,9 @@
 /* src/app/globals.css */
 
-/* Tailwind v4: use the new import style */
-@import "tailwindcss";
+/* Tailwind: وارد کردن لایه‌های اصلی */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 /* Base layer: global resets and brand styles */
 @layer base {
@@ -198,20 +200,15 @@
 }
 
 /* --- DatePicker Fixes --- */
-/* حذف نقطه بین ماه و سال و جایگزینی با ممیز */
 .rmdp-container-fix .rmdp-header .rmdp-header-values {
   direction: rtl;
   display: inline-flex;
   align-items: center;
   gap: 6px;
 }
-
-/* نقطه پیش‌فرض را حذف کن */
 .rmdp-container-fix .rmdp-header .rmdp-header-values span::after {
   content: "" !important;
 }
-
-/* ممیز را خودمان اضافه می‌کنیم */
 .rmdp-container-fix .rmdp-header .rmdp-header-values span:first-child::after {
   content: " /";
   margin: 0 2px;

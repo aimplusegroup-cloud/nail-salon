@@ -3,14 +3,14 @@ module.exports = {
   content: [
     "./src/app/**/*.{js,ts,jsx,tsx}",
     "./src/components/**/*.{js,ts,jsx,tsx}",
+    "./src/pages/**/*.{js,ts,jsx,tsx}",   // اگر از pages استفاده می‌کنی
+    "./src/layouts/**/*.{js,ts,jsx,tsx}", // اگر layout جدا داری
   ],
   theme: {
     extend: {
-      /* فونت برند */
       fontFamily: {
         bnazanin: ["BNazanin", "sans-serif"],
       },
-      /* رنگ‌های سفارشی */
       colors: {
         rose: {
           50: "#fff5f8",
@@ -24,12 +24,15 @@ module.exports = {
           800: "#a22d65",
           900: "#862657",
         },
+        brand: {
+          pink: "#ec4899",
+          rose: "#f43f5e",
+        },
       },
-      /* سایه‌های سفارشی */
       boxShadow: {
         xl: "0 12px 28px rgba(236,72,153,0.30)",
+        glow: "0 0 20px rgba(236,72,153,0.45)",
       },
-      /* انیمیشن‌ها */
       keyframes: {
         fadeIn: {
           "0%": { opacity: "0" },
@@ -39,15 +42,20 @@ module.exports = {
           "0%": { opacity: "0", transform: "scale(0.95)" },
           "100%": { opacity: "1", transform: "scale(1)" },
         },
+        slideUp: {
+          "0%": { transform: "translateY(20px)", opacity: "0" },
+          "100%": { transform: "translateY(0)", opacity: "1" },
+        },
       },
       animation: {
         fadeIn: "fadeIn 0.3s ease-out",
         scaleIn: "scaleIn 0.3s ease-out",
+        slideUp: "slideUp 0.4s ease-out",
       },
     },
   },
   plugins: [
     require("@tailwindcss/aspect-ratio"),
-    require("@tailwindcss/line-clamp"),
+    // ❌ line-clamp حذف شد
   ],
 };

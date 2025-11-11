@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { sendSMS } from "@/lib/smsClient";
 import jwt, { JwtPayload } from "jsonwebtoken";
+import { Prisma } from "@prisma/client";
 
 const WORK_START_HOUR = 10;
 const WORK_END_HOUR = 20;
@@ -10,6 +11,11 @@ interface UserPayload extends JwtPayload {
   id: string;
   phone?: string;
 }
+
+// ✅ نوع رزرو همراه با روابط
+type ReservationWithRelations = Prisma.ReservationGetPayload<{
+  include: { user: true; service: true; staff: true };
+}>;
 
 function getUserFromRequest(req: Request): UserPayload | null {
   const cookie = req.headers.get("cookie") || "";
@@ -25,7 +31,7 @@ function getUserFromRequest(req: Request): UserPayload | null {
 
 export async function GET() {
   try {
-    const reservations = await prisma.reservation.findMany({
+    const reservations: ReservationWithRelations[] = await prisma.reservation.findMany({
       orderBy: { createdAt: "desc" },
       include: { user: true, service: true, staff: true },
     });
@@ -90,9 +96,7 @@ export async function POST(req: Request) {
     }
 
     // محاسبه زمان پایان
-    const [h, m] = time.split(":").map((x: string) => parseInt(x, 10));
-    // یا می‌توانی بنویسی: const [h, m] = time.split(":").map(Number);
-
+    const [h, m] = time.split(":").map(Number);
     const startDate = new Date();
     startDate.setHours(h, m, 0, 0);
     const endDate = new Date(startDate.getTime() + service.durationMin * 60000);
