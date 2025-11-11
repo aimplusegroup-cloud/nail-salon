@@ -5,7 +5,7 @@ export default function ContactPage() {
     <section className="section space-y-12">
       {/* عنوان صفحه */}
       <div className="text-center space-y-3">
-        <h2 className="section-title">تماس با سالن ناخن رز</h2>
+        <h2 className="section-title">تماس با سالن ناخن نازی</h2>
         <p className="section-subtitle max-w-2xl mx-auto">
           برای رزرو وقت، مشاوره یا هرگونه پرسش می‌توانید از راه‌های زیر با ما در ارتباط باشید
         </p>
@@ -28,7 +28,7 @@ export default function ContactPage() {
         <div className="p-6 rounded-xl bg-white shadow">
           <h3 className="font-bold text-rose-600 text-lg">ایمیل</h3>
           <p className="text-sm text-gray-600 mt-2 leading-7">
-            info@rosenail.ir
+            info@naznail.ir
           </p>
         </div>
       </div>

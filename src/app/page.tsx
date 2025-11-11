@@ -169,7 +169,7 @@ export default async function HomePage() {
               <div className="gallery-item rounded-2xl overflow-hidden shadow-xl relative w-full h-[400px]">
                 <Image
                   src="/sample-hero.png"
-                  alt="نمونه کار لوکس سالن ناخن رز"
+                  alt="نمونه کار لوکس سالن ناخن نازی"
                   fill
                   className="object-cover"
                 />

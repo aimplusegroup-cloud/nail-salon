@@ -51,7 +51,7 @@ export default function ServicesPage() {
     <section className="section space-y-12">
       {/* عنوان صفحه */}
       <div className="text-center space-y-3">
-        <h2 className="section-title">خدمات سالن ناخن رز</h2>
+        <h2 className="section-title">خدمات سالن ناخن نازی</h2>
         <p className="section-subtitle max-w-2xl mx-auto">
           منتخب محبوب‌ترین سرویس‌ها برای تجربه‌ای جذاب، زنانه و حرفه‌ای
         </p>

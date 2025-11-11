@@ -32,7 +32,7 @@ export default async function GalleryPage() {
       {/* عنوان صفحه */}
       <h1 className="section-title text-center">گالری نمونه‌کارها</h1>
       <p className="section-subtitle text-center max-w-2xl mx-auto">
-        مجموعه‌ای از جدیدترین و محبوب‌ترین طراحی‌های سالن رز برای الهام گرفتن
+        مجموعه‌ای از جدیدترین و محبوب‌ترین طراحی‌های سالن نازی برای الهام گرفتن
         و انتخاب استایل دلخواه شما
       </p>
 
