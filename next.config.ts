@@ -38,20 +38,23 @@ const nextConfig: NextConfig = {
   productionBrowserSourceMaps: false,
   reactStrictMode: true,
   images: {
+    // ✅ برای رفع فوری مشکل لود، Optimizer را غیرفعال کن
+    unoptimized: true,
     formats: ["image/avif", "image/webp"],
     remotePatterns: [
       {
         protocol: "https",
         hostname: "bljowvueuaohttizdeir.supabase.co", // دامنه پروژه Supabase
-        pathname: "/storage/v1/object/public/gallery/**",
+        // ✅ عمومی‌تر تا تمام فایل‌های پابلیک پوشش داده شوند
+        pathname: "/storage/v1/object/public/**",
       },
     ],
     domains: [
-      "localhost",
-      "trustseal.new-enamad.ir",
-      "new-enamad.ir",
       "bljowvueuaohttizdeir.supabase.co", // Supabase
       "nail-salon-five.vercel.app",       // دامنه موقت Vercel
+      "trustseal.new-enamad.ir",
+      "new-enamad.ir",
+      "localhost",
     ],
   },
   experimental: {
