@@ -52,9 +52,9 @@ export async function POST(req: Request) {
     const bytes = await file.arrayBuffer();
     const buffer = new Uint8Array(bytes);
 
-    // نام فایل امن و یکتا
+    // نام فایل امن و یکتا (❌ بدون gallery/ چون خود bucket اسمش gallery است)
     const safeName = file.name.replace(/\s+/g, "-").toLowerCase();
-    const fileName = `gallery/${Date.now()}-${safeName}`;
+    const fileName = `${Date.now()}-${safeName}`;
 
     // آپلود به Supabase Storage با service_role
     const { error: uploadError } = await supabaseServer.storage

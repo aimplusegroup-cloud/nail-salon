@@ -62,8 +62,10 @@ export async function DELETE(
     // حذف فایل از Supabase Storage
     if (item.imageUrl) {
       // مسیر فایل داخل bucket رو از URL عمومی استخراج کن
-      const parts = item.imageUrl.split("/"); 
-      const filePath = parts.slice(parts.indexOf("gallery")).join("/"); 
+      // publicUrl شبیه اینه:
+      // https://<project-ref>.supabase.co/storage/v1/object/public/gallery/1762973270367-phon.png
+      const parts = item.imageUrl.split("/");
+      const filePath = parts.slice(parts.indexOf("gallery") + 1).join("/");
 
       const { error: removeError } = await supabaseServer.storage
         .from("gallery")
