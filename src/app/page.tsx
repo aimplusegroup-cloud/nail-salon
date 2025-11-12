@@ -122,89 +122,92 @@ export default async function HomePage() {
               icon="🧴"
             />
           </div>
-        </div>{/* گالری سمت راست */}
-<div className="relative">
-  {homeItems.length > 0 ? (
-    <>
-      <div className="gallery-item rounded-2xl overflow-hidden shadow-xl relative w-full h-[400px]">
-        <Image
-          src={homeItems[0].imageUrl || "/image/fallback-hero.png"}
-          alt={homeItems[0].title || "نمونه کار"}
-          fill
-          className="object-cover"
-        />
-        <div className="gallery-overlay">
-          <div className="overlay-title text-xl font-bold">
-            {homeItems[0].title}
-          </div>
         </div>
-      </div>
-      {homeItems.length > 1 && (
-        <div className="grid grid-cols-2 gap-4 mt-4">
-          {homeItems.slice(1, 5).map((it) => (
-            <div
-              key={it.id}
-              className="gallery-item rounded-xl overflow-hidden shadow relative w-full h-[200px]"
-            >
-              <Image
-                src={it.imageUrl || "/image/fallback.png"}
-                alt={it.title || "نمونه"}
-                fill
-                className="object-cover"
-              />
-              <div className="gallery-overlay">
-                <div className="overlay-title text-sm font-medium">
-                  {it.title}
+
+        {/* گالری سمت راست */}
+        <div className="relative">
+          {homeItems.length > 0 ? (
+            <>
+              <div className="gallery-item rounded-2xl overflow-hidden shadow-xl relative w-full h-[400px]">
+                <Image
+                  src={homeItems[0].imageUrl || "/image/fallback-hero.png"}
+                  alt={homeItems[0].title || "نمونه کار"}
+                  fill
+                  className="object-cover"
+                />
+                <div className="gallery-overlay">
+                  <div className="overlay-title text-xl font-bold">
+                    {homeItems[0].title}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
-      )}
-    </>
-  ) : (
-    <>
-      <div className="gallery-item rounded-2xl overflow-hidden shadow-xl relative w-full h-[400px]">
-        <Image
-          src="/image/sample-hero.jfif"
-          alt="نمونه کار لوکس سالن ناخن نازی"
-          fill
-          className="object-cover"
-        />
-        <div className="gallery-overlay">
-          <div className="overlay-title text-xl font-bold">
-            الهام از زیبایی شما
-          </div>
-        </div>
-      </div>
-      <div className="grid grid-cols-2 gap-4 mt-4">
-        {[
-          { src: "/image/sample1.jfif", alt: "فرنچ کلاسیک" },
-          { src: "/image/sample2.jfif", alt: "لاک ژل رزگلد" },
-          { src: "/image/sample3.jfif", alt: "دیزاین نگین‌دار" },
-          { src: "/image/sample4.jfif", alt: "استایل مینیمال" },
-        ].map((img, idx) => (
-          <div
-            key={idx}
-            className="gallery-item rounded-xl overflow-hidden shadow relative w-full h-[200px]"
-          >
-            <Image
-              src={img.src}
-              alt={img.alt}
-              fill
-              className="object-cover"
-            />
-            <div className="gallery-overlay">
-              <div className="overlay-title text-sm font-medium">
-                {img.alt}
+              {homeItems.length > 1 && (
+                <div className="grid grid-cols-2 gap-4 mt-4">
+                  {homeItems.slice(1, 5).map((it) => (
+                    <div
+                      key={it.id}
+                      className="gallery-item rounded-xl overflow-hidden shadow relative w-full h-[200px]"
+                    >
+                      <Image
+                        src={it.imageUrl || "/image/fallback.png"}
+                        alt={it.title || "نمونه"}
+                        fill
+                        className="object-cover"
+                      />
+                      <div className="gallery-overlay">
+                        <div className="overlay-title text-sm font-medium">
+                          {it.title}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </>
+          ) : (
+            <>
+              <div className="gallery-item rounded-2xl overflow-hidden shadow-xl relative w-full h-[400px]">
+                <Image
+                  src="/image/sample-hero.jfif"
+                  alt="نمونه کار لوکس سالن ناخن نازی"
+                  fill
+                  className="object-cover"
+                />
+                <div className="gallery-overlay">
+                  <div className="overlay-title text-xl font-bold">
+                    الهام از زیبایی شما
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-        ))}
+              <div className="grid grid-cols-2 gap-4 mt-4">
+                {[
+                  { src: "/image/sample1.jfif", alt: "فرنچ کلاسیک" },
+                  { src: "/image/sample2.jfif", alt: "لاک ژل رزگلد" },
+                  { src: "/image/sample3.jfif", alt: "دیزاین نگین‌دار" },
+                  { src: "/image/sample4.jfif", alt: "استایل مینیمال" },
+                ].map((img, idx) => (
+                  <div
+                    key={idx}
+                    className="gallery-item rounded-xl overflow-hidden shadow relative w-full h-[200px]"
+                  >
+                    <Image
+                      src={img.src}
+                      alt={img.alt}
+                      fill
+                      className="object-cover"
+                    />
+                    <div className="gallery-overlay">
+                      <div className="overlay-title text-sm font-medium">
+                        {img.alt}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+        </div>
       </div>
-    </>
-  )}
-</div>
 
       {/* Testimonials Section */}
       <Testimonials />
