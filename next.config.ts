@@ -11,7 +11,7 @@ const ContentSecurityPolicy = `
   default-src 'self';
   script-src 'self' 'unsafe-inline' 'unsafe-eval';
   style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
-  img-src 'self' data: https: https://trustseal.new-enamad.ir https://new-enamad.ir;
+  img-src 'self' data: https: https://trustseal.new-enamad.ir https://new-enamad.ir https://*.supabase.co;
   font-src 'self' https://fonts.gstatic.com;
   connect-src 'self' https://*.supabase.co;
   frame-ancestors 'none';
@@ -47,11 +47,13 @@ const nextConfig: NextConfig = {
       },
     ],
     domains: [
-      "your-new-domain.com",
       "localhost",
+      "your-new-domain.com",
       "cdn.your-new-domain.com",
       "trustseal.new-enamad.ir",
       "new-enamad.ir",
+      // 👇 دامنه‌ی پروژه Supabase رو اینجا اضافه کن
+      "https://bljowvueuaohttizdeir.supabase.co",
     ],
   },
   experimental: {
