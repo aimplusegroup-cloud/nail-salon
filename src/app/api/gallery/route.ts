@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { writeFile, mkdir } from "fs/promises";
-import path from "path";
+import { supabase } from "@/lib/supabase";
 
 /**
  * GET /api/gallery
@@ -25,7 +24,7 @@ export async function GET() {
 
 /**
  * POST /api/gallery
- * آپلود عکس جدید
+ * آپلود عکس جدید به Supabase Storage
  */
 export async function POST(req: Request) {
   try {
@@ -49,28 +48,39 @@ export async function POST(req: Request) {
       );
     }
 
-    // خواندن فایل
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-
-    // نام فایل امن
+    // نام فایل امن و یکتا
     const safeName = file.name.replace(/\s+/g, "-");
     const fileName = `${Date.now()}-${safeName}`;
-    const uploadDir = path.join(process.cwd(), "public/uploads");
 
-    // اطمینان از وجود پوشه
-    await mkdir(uploadDir, { recursive: true });
+    // آپلود به Supabase Storage
+    const { error: uploadError } = await supabase.storage
+      .from("gallery")
+      .upload(fileName, file, {
+        contentType: file.type || "image/jpeg",
+        upsert: false,
+      });
 
-    // ذخیره فایل روی دیسک
-    const filePath = path.join(uploadDir, fileName);
-    await writeFile(filePath, buffer);
+    if (uploadError) {
+      console.error("❌ Upload error:", uploadError);
+      return NextResponse.json(
+        { success: false, message: "آپلود ناموفق بود" },
+        { status: 500 }
+      );
+    }
+
+    // گرفتن URL عمومی
+    const { data: publicData } = supabase.storage
+      .from("gallery")
+      .getPublicUrl(fileName);
+
+    const publicUrl = publicData.publicUrl;
 
     // ذخیره رکورد در دیتابیس
     const item = await prisma.galleryItem.create({
       data: {
         title,
         description: description?.trim() || null,
-        imageUrl: `/uploads/${fileName}`, // مسیر قابل دسترس در public
+        imageUrl: publicUrl, // لینک مستقیم Supabase
       },
     });
 

@@ -15,7 +15,11 @@ export default function GalleryClient({ items }: { items: GalleryItem[] }) {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
   if (!items || items.length === 0) {
-    return <p className="text-center text-gray-500">هنوز عکسی ثبت نشده است.</p>;
+    return (
+      <p className="text-center text-gray-500">
+        هنوز عکسی ثبت نشده است.
+      </p>
+    );
   }
 
   const selected = selectedIndex !== null ? items[selectedIndex] : null;
@@ -46,13 +50,14 @@ export default function GalleryClient({ items }: { items: GalleryItem[] }) {
               src={it.imageUrl || "/sample.png"}
               alt={it.title || "نمونه کار"}
               fill
+              sizes="(max-width: 768px) 33vw, 25vw"
               className="object-cover transition-transform duration-300 hover:scale-105"
             />
           </div>
         ))}
       </div>
 
-      {/* 💻 دسکتاپ: سه‌ستونه با متن و توضیح (بدون مودال) */}
+      {/* 💻 دسکتاپ: سه‌ستونه با متن و توضیح */}
       <div className="hidden md:grid grid-cols-3 gap-6">
         {items.map((it) => (
           <div
@@ -64,6 +69,7 @@ export default function GalleryClient({ items }: { items: GalleryItem[] }) {
                 src={it.imageUrl || "/sample.png"}
                 alt={it.title || "نمونه کار"}
                 fill
+                sizes="33vw"
                 className="object-cover transform transition-transform duration-500 group-hover:scale-110"
               />
             </div>
@@ -117,15 +123,20 @@ export default function GalleryClient({ items }: { items: GalleryItem[] }) {
                 src={selected.imageUrl}
                 alt={selected.title}
                 fill
+                sizes="90vw"
                 className="object-contain transition-transform duration-500"
               />
             </div>
 
             {/* متن زیر عکس */}
             <div className="p-5 text-center bg-white">
-              <h2 className="font-bold text-lg text-gray-800">{selected.title}</h2>
+              <h2 className="font-bold text-lg text-gray-800">
+                {selected.title}
+              </h2>
               {selected.description && (
-                <p className="text-sm text-gray-600 mt-2">{selected.description}</p>
+                <p className="text-sm text-gray-600 mt-2">
+                  {selected.description}
+                </p>
               )}
               {selected.tags && (
                 <div className="flex flex-wrap gap-2 justify-center mt-3">

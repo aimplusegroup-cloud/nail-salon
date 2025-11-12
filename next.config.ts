@@ -13,7 +13,7 @@ const ContentSecurityPolicy = `
   style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
   img-src 'self' data: https: https://trustseal.new-enamad.ir https://new-enamad.ir;
   font-src 'self' https://fonts.gstatic.com;
-  connect-src 'self';
+  connect-src 'self' https://*.supabase.co;
   frame-ancestors 'none';
   object-src 'none';
   base-uri 'self';
@@ -39,6 +39,13 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   images: {
     formats: ["image/avif", "image/webp"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "**.supabase.co",
+        pathname: "/storage/v1/object/public/**",
+      },
+    ],
     domains: [
       "your-new-domain.com",
       "localhost",
