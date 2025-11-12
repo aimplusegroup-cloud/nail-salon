@@ -12,6 +12,7 @@ export async function GET() {
     const items = await prisma.galleryItem.findMany({
       orderBy: { createdAt: "desc" },
     });
+
     return NextResponse.json(items, { status: 200 });
   } catch (err) {
     console.error("❌ GET /api/gallery error:", err);
@@ -33,6 +34,7 @@ export async function POST(req: Request) {
     const description = formData.get("description") as string | null;
     const file = formData.get("file") as File | null;
 
+    // اعتبارسنجی ورودی‌ها
     if (!title || title.trim() === "") {
       return NextResponse.json(
         { success: false, message: "عنوان الزامی است" },
@@ -59,7 +61,7 @@ export async function POST(req: Request) {
     // اطمینان از وجود پوشه
     await mkdir(uploadDir, { recursive: true });
 
-    // ذخیره فایل
+    // ذخیره فایل روی دیسک
     const filePath = path.join(uploadDir, fileName);
     await writeFile(filePath, buffer);
 
@@ -67,8 +69,8 @@ export async function POST(req: Request) {
     const item = await prisma.galleryItem.create({
       data: {
         title,
-        description: description && description.trim() !== "" ? description : null,
-        imageUrl: `/uploads/${fileName}`,
+        description: description?.trim() || null,
+        imageUrl: `/uploads/${fileName}`, // مسیر قابل دسترس در public
       },
     });
 
