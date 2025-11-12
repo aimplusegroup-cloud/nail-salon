@@ -1,7 +1,6 @@
 import type { NextConfig } from "next";
 import createBundleAnalyzer from "@next/bundle-analyzer";
 
-// 🔍 فعال‌سازی Bundle Analyzer فقط وقتی ANALYZE=true باشه
 const withBundleAnalyzer = createBundleAnalyzer({
   enabled: process.env.ANALYZE === "true",
 });
@@ -19,7 +18,6 @@ const ContentSecurityPolicy = `
   base-uri 'self';
 `.replace(/\s{2,}/g, " ").trim();
 
-// 🔒 Security Headers
 const securityHeaders = [
   { key: "Content-Security-Policy", value: ContentSecurityPolicy },
   { key: "X-Frame-Options", value: "DENY" },
@@ -32,21 +30,19 @@ const securityHeaders = [
   { key: "Cross-Origin-Embedder-Policy", value: "require-corp" },
 ];
 
-// ⚙️ Next.js Config
 const nextConfig: NextConfig = {
   output: "standalone",
   productionBrowserSourceMaps: false,
   reactStrictMode: true,
   images: {
-    // ✅ برای رفع فوری مشکل لود، Optimizer را غیرفعال کن
+    // ✅ برای رفع خطای 400، Optimizer غیرفعال می‌شود
     unoptimized: true,
     formats: ["image/avif", "image/webp"],
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "bljowvueuaohttizdeir.supabase.co", // دامنه پروژه Supabase
-        // ✅ عمومی‌تر تا تمام فایل‌های پابلیک پوشش داده شوند
-        pathname: "/storage/v1/object/public/**",
+        hostname: "bljowvueuaohttizdeir.supabase.co", // دامنه Supabase
+        pathname: "/storage/v1/object/public/**",     // عمومی‌تر برای همه فایل‌های پابلیک
       },
     ],
     domains: [
