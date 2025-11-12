@@ -168,7 +168,7 @@ export default async function HomePage() {
             <>
               <div className="gallery-item rounded-2xl overflow-hidden shadow-xl relative w-full h-[400px]">
                 <Image
-                  src="/image/sample-hero.jfif"
+                  src="/image/sample-hero.jpg"
                   alt="نمونه کار لوکس سالن ناخن نازی"
                   fill
                   className="object-cover"
@@ -181,10 +181,10 @@ export default async function HomePage() {
               </div>
               <div className="grid grid-cols-2 gap-4 mt-4">
                 {[
-                  { src: "/image/sample1.jfif", alt: "فرنچ کلاسیک" },
-                  { src: "/image/sample2.jfif", alt: "لاک ژل رزگلد" },
-                  { src: "/image/sample3.jfif", alt: "دیزاین نگین‌دار" },
-                  { src: "/image/sample4.jfif", alt: "استایل مینیمال" },
+                  { src: "/image/sample1.jpg", alt: "فرنچ کلاسیک" },
+                  { src: "/image/sample2.jpg", alt: "لاک ژل رزگلد" },
+                  { src: "/image/sample3.jpg", alt: "دیزاین نگین‌دار" },
+                  { src: "/image/sample4.jpg", alt: "استایل مینیمال" },
                 ].map((img, idx) => (
                   <div
                     key={idx}
