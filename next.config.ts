@@ -42,8 +42,8 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "**.supabase.co",
-        pathname: "/storage/v1/object/public/**",
+        hostname: "bljowvueuaohttizdeir.supabase.co", // 👈 دامنه پروژه Supabase
+        pathname: "/storage/v1/object/public/gallery/**",
       },
     ],
     domains: [
@@ -52,8 +52,7 @@ const nextConfig: NextConfig = {
       "cdn.your-new-domain.com",
       "trustseal.new-enamad.ir",
       "new-enamad.ir",
-      // 👇 دامنه‌ی پروژه Supabase رو اینجا اضافه کن
-      "https://bljowvueuaohttizdeir.supabase.co",
+      "bljowvueuaohttizdeir.supabase.co", // 👈 فقط hostname، بدون https://
     ],
   },
   experimental: {
