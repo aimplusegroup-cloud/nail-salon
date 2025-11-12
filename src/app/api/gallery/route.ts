@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { supabase } from "@/lib/supabase";
+import { supabaseServer } from "@/lib/supabaseServer"; // کلاینت سروری با service_role
 
 /**
  * GET /api/gallery
@@ -24,7 +24,7 @@ export async function GET() {
 
 /**
  * POST /api/gallery
- * آپلود عکس جدید به Supabase Storage
+ * آپلود عکس جدید به Supabase Storage (فقط مدیر)
  */
 export async function POST(req: Request) {
   try {
@@ -48,14 +48,18 @@ export async function POST(req: Request) {
       );
     }
 
-    // نام فایل امن و یکتا
-    const safeName = file.name.replace(/\s+/g, "-");
-    const fileName = `${Date.now()}-${safeName}`;
+    // تبدیل فایل به باینری برای آپلود مطمئن
+    const bytes = await file.arrayBuffer();
+    const buffer = new Uint8Array(bytes);
 
-    // آپلود به Supabase Storage
-    const { error: uploadError } = await supabase.storage
+    // نام فایل امن و یکتا
+    const safeName = file.name.replace(/\s+/g, "-").toLowerCase();
+    const fileName = `gallery/${Date.now()}-${safeName}`;
+
+    // آپلود به Supabase Storage با service_role
+    const { error: uploadError } = await supabaseServer.storage
       .from("gallery")
-      .upload(fileName, file, {
+      .upload(fileName, buffer, {
         contentType: file.type || "image/jpeg",
         upsert: false,
       });
@@ -69,7 +73,7 @@ export async function POST(req: Request) {
     }
 
     // گرفتن URL عمومی
-    const { data: publicData } = supabase.storage
+    const { data: publicData } = supabaseServer.storage
       .from("gallery")
       .getPublicUrl(fileName);
 
@@ -80,7 +84,7 @@ export async function POST(req: Request) {
       data: {
         title,
         description: description?.trim() || null,
-        imageUrl: publicUrl, // لینک مستقیم Supabase
+        imageUrl: publicUrl,
       },
     });
 

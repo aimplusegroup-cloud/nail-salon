@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import fs from "fs/promises";
-import path from "path";
+import { supabaseServer } from "@/lib/supabaseServer"; // کلاینت سروری با service_role
 
 /**
  * PUT /api/gallery/[id]
@@ -9,10 +8,10 @@ import path from "path";
  */
 export async function PUT(
   req: Request,
-  context: { params: Promise<{ id: string }> }   // 🔑 باید Promise باشد
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = await context.params; // 🔑 await لازم است
+    const { id } = await context.params;
     const body = await req.json();
 
     if (!body.title || typeof body.title !== "string") {
@@ -43,11 +42,11 @@ export async function PUT(
 
 /**
  * DELETE /api/gallery/[id]
- * حذف یک آیتم گالری بر اساس id
+ * حذف یک آیتم گالری بر اساس id (از Supabase Storage + دیتابیس)
  */
 export async function DELETE(
   _req: Request,
-  context: { params: Promise<{ id: string }> }   // 🔑 باید Promise باشد
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     const { id } = await context.params;
@@ -60,21 +59,24 @@ export async function DELETE(
       );
     }
 
+    // حذف فایل از Supabase Storage
     if (item.imageUrl) {
-      const filePath = path.join(
-        process.cwd(),
-        "public",
-        item.imageUrl.replace(/^\/+/, "")
-      );
-      try {
-        await fs.unlink(filePath);
-        console.log("🗑️ فایل تصویر حذف شد:", filePath);
-      } catch (err: unknown) {
-        const error = err instanceof Error ? err.message : String(err);
-        console.warn("⚠️ فایل تصویر پیدا نشد یا قبلاً حذف شده بود:", filePath, error);
+      // مسیر فایل داخل bucket رو از URL عمومی استخراج کن
+      const parts = item.imageUrl.split("/"); 
+      const filePath = parts.slice(parts.indexOf("gallery")).join("/"); 
+
+      const { error: removeError } = await supabaseServer.storage
+        .from("gallery")
+        .remove([filePath]);
+
+      if (removeError) {
+        console.warn("⚠️ خطا در حذف فایل از Supabase:", removeError.message);
+      } else {
+        console.log("🗑️ فایل تصویر از Supabase حذف شد:", filePath);
       }
     }
 
+    // حذف رکورد از دیتابیس
     await prisma.galleryItem.delete({ where: { id } });
 
     return NextResponse.json(
