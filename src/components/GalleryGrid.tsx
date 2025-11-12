@@ -1,7 +1,6 @@
 "use client";
 
 import { useMemo, useState, useEffect } from "react";
-import Image from "next/image";
 
 type Item = {
   id: string;
@@ -109,13 +108,12 @@ export default function GalleryGrid() {
             className="group overflow-hidden rounded-xl shadow-md hover:shadow-xl transition bg-white flex flex-col"
             style={{ height: 320 }}
           >
-            {/* تصویر با انیمیشن نرم */}
+            {/* تصویر با <img> ساده و حرفه‌ای */}
             <div className="relative w-full h-48 overflow-hidden">
-              <Image
+              <img
                 src={item.imageUrl}
                 alt={item.title}
-                fill
-                className="object-cover transform transition-transform duration-500 group-hover:scale-105"
+                className="object-cover w-full h-full transform transition-transform duration-500 group-hover:scale-105"
                 loading="lazy"
               />
             </div>
