@@ -11,9 +11,9 @@ const ContentSecurityPolicy = `
   default-src 'self';
   script-src 'self' 'unsafe-inline' 'unsafe-eval';
   style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
-  img-src 'self' data: https: https://trustseal.new-enamad.ir https://new-enamad.ir https://*.supabase.co;
+  img-src 'self' data: https: https://trustseal.new-enamad.ir https://new-enamad.ir https://*.supabase.co https://*.vercel.app;
   font-src 'self' https://fonts.gstatic.com;
-  connect-src 'self' https://*.supabase.co;
+  connect-src 'self' https://*.supabase.co https://*.vercel.app;
   frame-ancestors 'none';
   object-src 'none';
   base-uri 'self';
@@ -42,17 +42,16 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "bljowvueuaohttizdeir.supabase.co", // 👈 دامنه پروژه Supabase
+        hostname: "bljowvueuaohttizdeir.supabase.co", // دامنه پروژه Supabase
         pathname: "/storage/v1/object/public/gallery/**",
       },
     ],
     domains: [
       "localhost",
-      "your-new-domain.com",
-      "cdn.your-new-domain.com",
       "trustseal.new-enamad.ir",
       "new-enamad.ir",
-      "bljowvueuaohttizdeir.supabase.co", // 👈 فقط hostname، بدون https://
+      "bljowvueuaohttizdeir.supabase.co", // Supabase
+      "nail-salon-five.vercel.app",       // دامنه موقت Vercel
     ],
   },
   experimental: {
