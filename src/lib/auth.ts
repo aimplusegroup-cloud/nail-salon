@@ -2,11 +2,11 @@
 import jwt from "jsonwebtoken";
 
 export interface UserPayload {
-  id: string;
+  id: string | number; // کاربر: String (cuid)، مدیر: number (Int)
   email?: string;
   phone?: string;
   name?: string;
-  role?: string;      // "admin" یا undefined برای کاربر عادی
+  role?: "admin" | "user";
   provider?: string;
 }
 

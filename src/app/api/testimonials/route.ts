@@ -1,9 +1,10 @@
+// src/app/api/testimonials/route.ts
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { TestimonialStatus } from "@prisma/client";
 import { getUserFromRequest, UserPayload } from "@/lib/auth";
 
-// ✅ گرفتن همه نظرات
+// گرفتن همه نظرات
 export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
@@ -25,7 +26,7 @@ export async function GET(req: Request) {
   }
 }
 
-// ✅ افزودن نظر جدید (فقط کاربر یا مدیر لاگین کرده)
+// افزودن نظر جدید (کاربر یا مدیر لاگین کرده)
 export async function POST(req: Request) {
   try {
     const user = getUserFromRequest(req);
@@ -45,24 +46,26 @@ export async function POST(req: Request) {
       );
     }
 
+    // اگر مدیر است، به کاربر وصل نکن؛ فقط نام را از ایمیل/نام مدیر بردار
+    const isAdmin = user.role === "admin";
     const displayName =
       (user as UserPayload).name ??
       (user as UserPayload).phone ??
       (user as UserPayload).email ??
-      "ناشناس";
+      (isAdmin ? "مدیر" : "ناشناس");
 
     const item = await prisma.testimonial.create({
       data: {
         name: displayName,
         text,
         status: TestimonialStatus.PENDING,
-        userId: user.id,
+        userId: isAdmin ? null : String(user.id), // کلید خارجی فقط برای کاربر
       },
     });
 
     return NextResponse.json({
       success: true,
-      message: "نظر شما ثبت شد و پس از تایید مدیر نمایش داده خواهد شد",
+      message: "نظر ثبت شد و پس از تایید مدیر نمایش داده خواهد شد",
       item,
     });
   } catch (err: unknown) {
@@ -75,7 +78,7 @@ export async function POST(req: Request) {
   }
 }
 
-// ✅ ویرایش یا تغییر وضعیت نظر (فقط مدیر)
+// ویرایش یا تغییر وضعیت نظر (فقط مدیر)
 export async function PUT(req: Request) {
   try {
     const user = getUserFromRequest(req);
@@ -117,7 +120,7 @@ export async function PUT(req: Request) {
   }
 }
 
-// ✅ حذف نظر (فقط مدیر)
+// حذف نظر (فقط مدیر)
 export async function DELETE(req: Request) {
   try {
     const user = getUserFromRequest(req);
