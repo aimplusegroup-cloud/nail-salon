@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 
 interface GalleryItem {
   id: string;
@@ -46,12 +45,11 @@ export default function GalleryClient({ items }: { items: GalleryItem[] }) {
             className="relative w-full aspect-square overflow-hidden cursor-pointer"
             onClick={() => setSelectedIndex(idx)}
           >
-            <Image
+            <img
               src={it.imageUrl || "/sample.png"}
               alt={it.title || "نمونه کار"}
-              fill
-              sizes="(max-width: 768px) 33vw, 25vw"
-              className="object-cover transition-transform duration-300 hover:scale-105"
+              className="object-cover w-full h-full transition-transform duration-300 hover:scale-105"
+              loading="lazy"
             />
           </div>
         ))}
@@ -65,12 +63,11 @@ export default function GalleryClient({ items }: { items: GalleryItem[] }) {
             className="group overflow-hidden rounded-xl shadow hover:shadow-xl transition flex flex-col bg-white"
           >
             <div className="relative w-full aspect-[4/3] overflow-hidden">
-              <Image
+              <img
                 src={it.imageUrl || "/sample.png"}
                 alt={it.title || "نمونه کار"}
-                fill
-                sizes="33vw"
-                className="object-cover transform transition-transform duration-500 group-hover:scale-110"
+                className="object-cover w-full h-full transform transition-transform duration-500 group-hover:scale-110"
+                loading="lazy"
               />
             </div>
             <div className="p-3 text-center bg-white">
@@ -119,12 +116,11 @@ export default function GalleryClient({ items }: { items: GalleryItem[] }) {
 
             {/* تصویر */}
             <div className="bg-black flex items-center justify-center relative w-full h-[70vh]">
-              <Image
+              <img
                 src={selected.imageUrl}
                 alt={selected.title}
-                fill
-                sizes="90vw"
-                className="object-contain transition-transform duration-500"
+                className="object-contain max-h-full transition-transform duration-500"
+                loading="lazy"
               />
             </div>
 

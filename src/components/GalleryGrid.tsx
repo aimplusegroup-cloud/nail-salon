@@ -108,7 +108,7 @@ export default function GalleryGrid() {
             className="group overflow-hidden rounded-xl shadow-md hover:shadow-xl transition bg-white flex flex-col"
             style={{ height: 320 }}
           >
-            {/* تصویر با <img> ساده و حرفه‌ای */}
+            {/* تصویر با <img> ساده و پایدار */}
             <div className="relative w-full h-48 overflow-hidden">
               <img
                 src={item.imageUrl}
