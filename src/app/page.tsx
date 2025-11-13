@@ -106,7 +106,7 @@ export default async function HomePage() {
               icon="📆"
             />
             <Feature
-              title={getText("feature5_title", "گالری الهام‌بخش")}
+              title={getText("feature5_title", "")}
               desc={getText(
                 "feature5_desc",
                 "مشاهده‌ی نمونه‌کارهای متنوع برای انتخاب راحت‌تر سبک دلخواه"
