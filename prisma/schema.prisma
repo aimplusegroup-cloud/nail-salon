@@ -5,7 +5,9 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_DATABASE_URL")
 }
+
 
 model Service {
   id           String        @id @default(cuid())
@@ -77,11 +79,13 @@ model GalleryItem {
   title       String
   description String?
   style       String?
-  imageUrl    String
+  imageUrl    String   // مسیر عکس (استاتیک یا Supabase)
   tags        String?
+  source      String   @default("supabase") // "supabase" یا "static"
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
+
 
 model Admin {
   id               Int       @id @default(autoincrement())

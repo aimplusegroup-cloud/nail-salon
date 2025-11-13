@@ -24,7 +24,7 @@ export async function GET() {
 
 /**
  * POST /api/gallery
- * آپلود عکس جدید به Supabase Storage (فقط مدیر)
+ * اضافه کردن عکس جدید (استاتیک یا Supabase)
  */
 export async function POST(req: Request) {
   try {
@@ -32,8 +32,8 @@ export async function POST(req: Request) {
     const title = formData.get("title") as string | null;
     const description = formData.get("description") as string | null;
     const file = formData.get("file") as File | null;
+    const imageUrl = formData.get("imageUrl") as string | null;
 
-    // اعتبارسنجی ورودی‌ها
     if (!title || title.trim() === "") {
       return NextResponse.json(
         { success: false, message: "عنوان الزامی است" },
@@ -41,50 +41,50 @@ export async function POST(req: Request) {
       );
     }
 
-    if (!file) {
+    let finalUrl = "";
+    let source = "supabase";
+
+    if (file) {
+      // آپلود به Supabase
+      const bytes = await file.arrayBuffer();
+      const buffer = new Uint8Array(bytes);
+      const safeName = file.name.replace(/\s+/g, "-").toLowerCase();
+      const fileName = `${Date.now()}-${safeName}`;
+
+      const { error } = await supabaseServer.storage
+        .from("gallery")
+        .upload(fileName, buffer, {
+          contentType: file.type || "image/jpeg",
+          upsert: false,
+        });
+
+      if (error) {
+        console.error("❌ Upload error:", error);
+        return NextResponse.json(
+          { success: false, message: "آپلود ناموفق بود" },
+          { status: 500 }
+        );
+      }
+
+      const { data } = supabaseServer.storage.from("gallery").getPublicUrl(fileName);
+      finalUrl = data.publicUrl;
+    } else if (imageUrl) {
+      // مسیر استاتیک
+      finalUrl = imageUrl;
+      source = "static";
+    } else {
       return NextResponse.json(
-        { success: false, message: "فایل انتخاب نشده" },
+        { success: false, message: "فایل یا مسیر عکس الزامی است" },
         { status: 400 }
       );
     }
 
-    // تبدیل فایل به باینری برای آپلود مطمئن
-    const bytes = await file.arrayBuffer();
-    const buffer = new Uint8Array(bytes);
-
-    // نام فایل امن و یکتا (❌ بدون gallery/ چون خود bucket اسمش gallery است)
-    const safeName = file.name.replace(/\s+/g, "-").toLowerCase();
-    const fileName = `${Date.now()}-${safeName}`;
-
-    // آپلود به Supabase Storage با service_role
-    const { error: uploadError } = await supabaseServer.storage
-      .from("gallery")
-      .upload(fileName, buffer, {
-        contentType: file.type || "image/jpeg",
-        upsert: false,
-      });
-
-    if (uploadError) {
-      console.error("❌ Upload error:", uploadError);
-      return NextResponse.json(
-        { success: false, message: "آپلود ناموفق بود" },
-        { status: 500 }
-      );
-    }
-
-    // گرفتن URL عمومی
-    const { data: publicData } = supabaseServer.storage
-      .from("gallery")
-      .getPublicUrl(fileName);
-
-    const publicUrl = publicData.publicUrl;
-
-    // ذخیره رکورد در دیتابیس
     const item = await prisma.galleryItem.create({
       data: {
         title,
         description: description?.trim() || null,
-        imageUrl: publicUrl,
+        imageUrl: finalUrl,
+        source,
       },
     });
 
@@ -93,6 +93,26 @@ export async function POST(req: Request) {
     console.error("❌ POST /api/gallery error:", err);
     return NextResponse.json(
       { success: false, message: "خطای داخلی سرور" },
+      { status: 500 }
+    );
+  }
+}
+
+/**
+ * DELETE /api/gallery
+ * حذف رکورد گالری (مدیر)
+ */
+export async function DELETE(req: Request) {
+  try {
+    const { id } = await req.json();
+
+    await prisma.galleryItem.delete({ where: { id } });
+
+    return NextResponse.json({ success: true }, { status: 200 });
+  } catch (err) {
+    console.error("❌ DELETE /api/gallery error:", err);
+    return NextResponse.json(
+      { success: false, message: "خطا در حذف رکورد" },
       { status: 500 }
     );
   }
