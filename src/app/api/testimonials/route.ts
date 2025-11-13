@@ -1,26 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
-import jwt, { JwtPayload } from "jsonwebtoken";
 import { TestimonialStatus } from "@prisma/client";
-
-interface UserPayload extends JwtPayload {
-  id: string;
-  phone?: string;
-  name?: string;
-  role?: string; // 👈 نقش کاربر (admin یا user)
-}
-
-function getUserFromRequest(req: Request): UserPayload | null {
-  const cookie = req.headers.get("cookie") || "";
-  const match = cookie.match(/user_token=([^;]+)/);
-  if (!match) return null;
-
-  try {
-    return jwt.verify(match[1], process.env.JWT_SECRET!) as UserPayload;
-  } catch {
-    return null;
-  }
-}
+import { getUserFromRequest, UserPayload } from "@/lib/auth";
 
 // ✅ گرفتن همه نظرات
 export async function GET(req: Request) {
@@ -44,7 +25,7 @@ export async function GET(req: Request) {
   }
 }
 
-// ✅ افزودن نظر جدید (فقط کاربر لاگین کرده)
+// ✅ افزودن نظر جدید (فقط کاربر یا مدیر لاگین کرده)
 export async function POST(req: Request) {
   try {
     const user = getUserFromRequest(req);
@@ -56,17 +37,24 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
-    if (!body.text) {
+    const text = typeof body?.text === "string" ? body.text.trim() : "";
+    if (!text) {
       return NextResponse.json(
         { success: false, message: "متن نظر الزامی است" },
         { status: 400 }
       );
     }
 
+    const displayName =
+      (user as UserPayload).name ??
+      (user as UserPayload).phone ??
+      (user as UserPayload).email ??
+      "ناشناس";
+
     const item = await prisma.testimonial.create({
       data: {
-        name: user.name ?? user.phone ?? "ناشناس",
-        text: body.text,
+        name: displayName,
+        text,
         status: TestimonialStatus.PENDING,
         userId: user.id,
       },
@@ -99,25 +87,25 @@ export async function PUT(req: Request) {
     }
 
     const body = await req.json();
-    if (!body.id) {
+
+    const id = body?.id as string | undefined;
+    if (!id) {
       return NextResponse.json(
         { success: false, message: "شناسه نظر الزامی است" },
         { status: 400 }
       );
     }
 
+    const allowedStatuses = ["PENDING", "APPROVED", "REJECTED"] as const;
     const data: { name?: string; text?: string; status?: TestimonialStatus } = {};
-    if (body.name) data.name = body.name;
-    if (body.text) data.text = body.text;
-    if (body.status && ["PENDING", "APPROVED", "REJECTED"].includes(body.status)) {
+
+    if (typeof body?.name === "string" && body.name.trim()) data.name = body.name.trim();
+    if (typeof body?.text === "string" && body.text.trim()) data.text = body.text.trim();
+    if (typeof body?.status === "string" && allowedStatuses.includes(body.status)) {
       data.status = body.status as TestimonialStatus;
     }
 
-    const item = await prisma.testimonial.update({
-      where: { id: body.id },
-      data,
-    });
-
+    const item = await prisma.testimonial.update({ where: { id }, data });
     return NextResponse.json({ success: true, item });
   } catch (err: unknown) {
     const error = err instanceof Error ? err.message : String(err);
@@ -141,14 +129,15 @@ export async function DELETE(req: Request) {
     }
 
     const body = await req.json();
-    if (!body.id) {
+    const id = body?.id as string | undefined;
+    if (!id) {
       return NextResponse.json(
         { success: false, message: "شناسه نظر الزامی است" },
         { status: 400 }
       );
     }
 
-    await prisma.testimonial.delete({ where: { id: body.id } });
+    await prisma.testimonial.delete({ where: { id } });
     return NextResponse.json({ success: true, message: "نظر حذف شد" });
   } catch (err: unknown) {
     const error = err instanceof Error ? err.message : String(err);
