@@ -106,7 +106,7 @@ export default async function HomePage() {
               icon="📆"
             />
             <Feature
-              title={getText("feature5_title", "")}
+              title={getText("feature5_title", "گالری الهام‌بخش")}
               desc={getText(
                 "feature5_desc",
                 "مشاهده‌ی نمونه‌کارهای متنوع برای انتخاب راحت‌تر سبک دلخواه"
@@ -134,6 +134,7 @@ export default async function HomePage() {
                   alt={homeItems[0].title || "نمونه کار"}
                   fill
                   className="object-cover"
+                  unoptimized
                 />
                 <div className="gallery-overlay">
                   <div className="overlay-title text-xl font-bold">
@@ -153,6 +154,7 @@ export default async function HomePage() {
                         alt={it.title || "نمونه"}
                         fill
                         className="object-cover"
+                        unoptimized
                       />
                       <div className="gallery-overlay">
                         <div className="overlay-title text-sm font-medium">
@@ -162,49 +164,12 @@ export default async function HomePage() {
                     </div>
                   ))}
                 </div>
-              )}
+                          )}
             </>
           ) : (
-            <>
-              <div className="gallery-item rounded-2xl overflow-hidden shadow-xl relative w-full h-[400px]">
-                <Image
-                  src="/image/sample-hero.jpg"
-                  alt="نمونه کار لوکس سالن ناخن نازی"
-                  fill
-                  className="object-cover"
-                />
-                <div className="gallery-overlay">
-                  <div className="overlay-title text-xl font-bold">
-                    الهام از زیبایی شما
-                  </div>
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4 mt-4">
-                {[
-                  { src: "/image/sample1.jpg", alt: "فرنچ کلاسیک" },
-                  { src: "/image/sample2.jpg", alt: "لاک ژل رزگلد" },
-                  { src: "/image/sample3.jpg", alt: "دیزاین نگین‌دار" },
-                  { src: "/image/sample4.jpg", alt: "استایل مینیمال" },
-                ].map((img, idx) => (
-                  <div
-                    key={idx}
-                    className="gallery-item rounded-xl overflow-hidden shadow relative w-full h-[200px]"
-                  >
-                    <Image
-                      src={img.src}
-                      alt={img.alt}
-                      fill
-                      className="object-cover"
-                    />
-                    <div className="gallery-overlay">
-                      <div className="overlay-title text-sm font-medium">
-                        {img.alt}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </>
+            <p className="text-gray-500 text-center">
+              هنوز محتوایی ثبت نشده است.
+            </p>
           )}
         </div>
       </div>
@@ -221,7 +186,7 @@ export default async function HomePage() {
             <h4 className="text-rose-700 font-bold text-lg mb-2 flex items-center justify-center md:justify-start gap-2">
               📍 {getText("info_address_title", "آدرس")}
             </h4>
-                        <p className="text-sm text-gray-600 leading-7">
+            <p className="text-sm text-gray-600 leading-7">
               {getText(
                 "info_address_text",
                 "تهران، ایران — همه روزه از " +
