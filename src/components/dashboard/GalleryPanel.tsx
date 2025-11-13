@@ -189,7 +189,7 @@ export default function GalleryPanel() {
             </div>
             <div className="card-soft p-3 flex items-center justify-center">
               {preview ? (
-                <Image src={preview} alt="پیش‌نمایش" width={160} height={112} className="rounded-xl object-cover shadow" />
+                <Image src={preview} alt="پیش‌نمایش" width={160} height={112} className="rounded-xl object-cover shadow" unoptimized />
               ) : (
                 <div className="text-xs text-gray-500">پیش‌نمایش فایل انتخاب‌شده اینجا نمایش داده می‌شود</div>
               )}
@@ -213,7 +213,7 @@ export default function GalleryPanel() {
             </div>
           ) : (
             <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
-                           {items.length === 0 && (
+              {items.length === 0 && (
                 <p className="text-gray-500 col-span-full text-center">
                   هنوز عکسی ثبت نشده است.
                 </p>
@@ -222,7 +222,7 @@ export default function GalleryPanel() {
                 <div key={it.id} className="card p-2 flex flex-col">
                   {editId === it.id ? (
                     <>
-                      <input
+                                            <input
                         value={editTitle}
                         onChange={(e) => setEditTitle(e.target.value)}
                         className="input w-full"
@@ -260,6 +260,7 @@ export default function GalleryPanel() {
                           fill
                           className="rounded-xl object-cover"
                           loading="lazy"
+                          unoptimized
                         />
                       </div>
                       <h3 className="mt-2 font-bold text-xs truncate">
