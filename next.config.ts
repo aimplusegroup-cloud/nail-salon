@@ -35,13 +35,13 @@ const nextConfig: NextConfig = {
   productionBrowserSourceMaps: false,
   reactStrictMode: true,
   images: {
-    unoptimized: true, // ✅ برای جلوگیری از خطای 400
+    unoptimized: true, // ✅ جلوگیری از خطای 400
     formats: ["image/avif", "image/webp"],
     remotePatterns: [
       {
         protocol: "https",
         hostname: "bljowvueuaohttizdeir.supabase.co",
-        pathname: "/storage/v1/object/public/gallery/**", // مسیر دقیق پوشه‌ی گالری
+        pathname: "/storage/v1/object/public/**", // پوشش همه پوشه‌ها (home, gallery, staff, testimonials)
       },
     ],
     domains: [
