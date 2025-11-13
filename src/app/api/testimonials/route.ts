@@ -1,4 +1,3 @@
-// src/app/api/testimonials/route.ts
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { TestimonialStatus } from "@prisma/client";
@@ -46,7 +45,6 @@ export async function POST(req: Request) {
       );
     }
 
-    // اگر مدیر است، به کاربر وصل نکن؛ فقط نام را از ایمیل/نام مدیر بردار
     const isAdmin = user.role === "admin";
     const displayName =
       (user as UserPayload).name ??
@@ -59,7 +57,8 @@ export async function POST(req: Request) {
         name: displayName,
         text,
         status: TestimonialStatus.PENDING,
-        userId: isAdmin ? null : String(user.id), // کلید خارجی فقط برای کاربر
+        // 👇 تغییر اصلی: فقط کاربر عادی به جدول User وصل می‌شود
+        userId: isAdmin ? null : String(user.id),
       },
     });
 
@@ -90,7 +89,6 @@ export async function PUT(req: Request) {
     }
 
     const body = await req.json();
-
     const id = body?.id as string | undefined;
     if (!id) {
       return NextResponse.json(
