@@ -5,6 +5,9 @@ import Testimonials from "@/components/Testimonials";
 import TestimonialForm from "@/components/TestimonialForm";
 import { FaInstagram, FaWhatsapp, FaTelegramPlane } from "react-icons/fa";
 
+// 🚀 این خط باعث می‌شود صفحه همیشه داده تازه بگیرد
+export const revalidate = 0;
+
 // تبدیل اعداد به فارسی
 const toFa = (val: string | number) => {
   return val
@@ -164,7 +167,7 @@ export default async function HomePage() {
                     </div>
                   ))}
                 </div>
-                          )}
+              )}
             </>
           ) : (
             <p className="text-gray-500 text-center">
@@ -214,7 +217,7 @@ export default async function HomePage() {
           {/* رزرو آنلاین */}
           <div>
             <h4 className="text-rose-700 font-bold text-lg mb-2 flex items-center justify-center md:justify-start gap-2">
-              📅 {getText("info_reserve_title", "رزرو آنلاین")}
+                           📅 {getText("info_reserve_title", "رزرو آنلاین")}
             </h4>
             <p className="text-sm text-gray-600 leading-7">
               {getText(
