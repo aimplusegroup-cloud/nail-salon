@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { prisma } from "@/lib/prisma"; // ✅ فقط import از lib
+import { prisma } from "@/lib/prisma";
 
 export async function POST(req: Request) {
   try {
@@ -30,7 +30,12 @@ export async function POST(req: Request) {
       }
 
       const token = jwt.sign(
-        { id: admin.id, email: admin.email, provider: admin.provider },
+        {
+          id: admin.id,
+          email: admin.email,
+          provider: admin.provider,
+          role: "admin", // 👈 نقش مدیر اضافه شد
+        },
         secret,
         { expiresIn: remember ? "7d" : "1h" }
       );
@@ -68,7 +73,11 @@ export async function POST(req: Request) {
     }
 
     const token = jwt.sign(
-      { id: admin.id, email: admin.email },
+      {
+        id: admin.id,
+        email: admin.email,
+        role: "admin", // 👈 نقش مدیر اضافه شد
+      },
       secret,
       { expiresIn: remember ? "7d" : "1h" }
     );

@@ -1,12 +1,13 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import jwt, { JwtPayload } from "jsonwebtoken";
-import { TestimonialStatus } from "@prisma/client"; // 👈 اضافه شد
+import { TestimonialStatus } from "@prisma/client";
 
 interface UserPayload extends JwtPayload {
   id: string;
   phone?: string;
   name?: string;
+  role?: string; // 👈 نقش کاربر (admin یا user)
 }
 
 function getUserFromRequest(req: Request): UserPayload | null {
@@ -21,7 +22,7 @@ function getUserFromRequest(req: Request): UserPayload | null {
   }
 }
 
-// گرفتن همه نظرات
+// ✅ گرفتن همه نظرات
 export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
@@ -43,7 +44,7 @@ export async function GET(req: Request) {
   }
 }
 
-// افزودن نظر جدید (فقط کاربر لاگین کرده)
+// ✅ افزودن نظر جدید (فقط کاربر لاگین کرده)
 export async function POST(req: Request) {
   try {
     const user = getUserFromRequest(req);
@@ -66,7 +67,7 @@ export async function POST(req: Request) {
       data: {
         name: user.name ?? user.phone ?? "ناشناس",
         text: body.text,
-        status: TestimonialStatus.PENDING, // 👈 enum استفاده شد
+        status: TestimonialStatus.PENDING,
         userId: user.id,
       },
     });
@@ -86,11 +87,18 @@ export async function POST(req: Request) {
   }
 }
 
-// ویرایش یا تغییر وضعیت نظر (برای مدیر)
+// ✅ ویرایش یا تغییر وضعیت نظر (فقط مدیر)
 export async function PUT(req: Request) {
   try {
-    const body = await req.json();
+    const user = getUserFromRequest(req);
+    if (!user || user.role !== "admin") {
+      return NextResponse.json(
+        { success: false, message: "دسترسی غیرمجاز" },
+        { status: 401 }
+      );
+    }
 
+    const body = await req.json();
     if (!body.id) {
       return NextResponse.json(
         { success: false, message: "شناسه نظر الزامی است" },
@@ -121,11 +129,18 @@ export async function PUT(req: Request) {
   }
 }
 
-// حذف نظر
+// ✅ حذف نظر (فقط مدیر)
 export async function DELETE(req: Request) {
   try {
-    const body = await req.json();
+    const user = getUserFromRequest(req);
+    if (!user || user.role !== "admin") {
+      return NextResponse.json(
+        { success: false, message: "دسترسی غیرمجاز" },
+        { status: 401 }
+      );
+    }
 
+    const body = await req.json();
     if (!body.id) {
       return NextResponse.json(
         { success: false, message: "شناسه نظر الزامی است" },
