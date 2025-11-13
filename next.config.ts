@@ -10,9 +10,9 @@ const ContentSecurityPolicy = `
   default-src 'self';
   script-src 'self' 'unsafe-inline' 'unsafe-eval';
   style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
-  img-src 'self' data: https: https://trustseal.new-enamad.ir https://new-enamad.ir https://*.supabase.co https://*.vercel.app;
+  img-src 'self' data: https: https://bljowvueuaohttizdeir.supabase.co https://*.vercel.app https://trustseal.new-enamad.ir https://new-enamad.ir;
   font-src 'self' https://fonts.gstatic.com;
-  connect-src 'self' https://*.supabase.co https://*.vercel.app;
+  connect-src 'self' https://bljowvueuaohttizdeir.supabase.co https://*.vercel.app;
   frame-ancestors 'none';
   object-src 'none';
   base-uri 'self';
@@ -35,19 +35,18 @@ const nextConfig: NextConfig = {
   productionBrowserSourceMaps: false,
   reactStrictMode: true,
   images: {
-    // ✅ برای رفع خطای 400، Optimizer غیرفعال می‌شود
-    unoptimized: true,
+    unoptimized: true, // ✅ برای جلوگیری از خطای 400
     formats: ["image/avif", "image/webp"],
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "bljowvueuaohttizdeir.supabase.co", // دامنه Supabase
-        pathname: "/storage/v1/object/public/**",     // عمومی‌تر برای همه فایل‌های پابلیک
+        hostname: "bljowvueuaohttizdeir.supabase.co",
+        pathname: "/storage/v1/object/public/gallery/**", // مسیر دقیق پوشه‌ی گالری
       },
     ],
     domains: [
       "bljowvueuaohttizdeir.supabase.co", // Supabase
-      "nail-salon-five.vercel.app",       // دامنه موقت Vercel
+      "nail-salon-five.vercel.app",       // دامنه Vercel
       "trustseal.new-enamad.ir",
       "new-enamad.ir",
       "localhost",
