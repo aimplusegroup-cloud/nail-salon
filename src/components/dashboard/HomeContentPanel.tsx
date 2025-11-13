@@ -230,6 +230,7 @@ export default function HomeContentPanel() {
                         alt={it.title}
                         fill
                         className="object-cover rounded"
+                        unoptimized
                       />
                     </div>
                   )}

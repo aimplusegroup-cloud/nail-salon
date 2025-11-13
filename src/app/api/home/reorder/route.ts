@@ -1,10 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
-/**
- * POST /api/home/reorder
- * تغییر ترتیب آیتم‌های صفحه اصلی
- */
 export async function POST(req: Request) {
   try {
     const body = await req.json();

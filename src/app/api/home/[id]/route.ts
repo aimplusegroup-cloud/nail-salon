@@ -1,7 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
-import fs from "fs/promises";
-import path from "path";
+import { supabaseServer } from "@/lib/supabaseServer";
 
 // ---------------------- GET → دریافت یک آیتم ----------------------
 export async function GET(
@@ -51,9 +50,9 @@ export async function PUT(
     const updated = await prisma.homeContent.update({
       where: { id },
       data: {
-        title: body.title,
-        text: body.text,
-        imageUrl: body.imageUrl,
+        title: body.title ?? undefined,
+        text: body.text ?? undefined,
+        imageUrl: body.imageUrl ?? undefined,
         order: body.order ?? undefined,
       },
     });
@@ -91,15 +90,20 @@ export async function DELETE(
       );
     }
 
-    if (item.imageUrl) {
-      const safePath = item.imageUrl.replace(/^\/+/, "");
-      const filePath = path.join(process.cwd(), "public", safePath);
+    // اگر تصویر در Supabase ذخیره شده باشد، حذفش کن
+    if (item.imageUrl && item.imageUrl.includes("/storage/v1/object/public/uploads/")) {
+      // URL عمومی Supabase شبیه: https://.../storage/v1/object/public/uploads/home/filename.jpg
+      const idx = item.imageUrl.indexOf("/uploads/");
+      const objectPath = item.imageUrl.slice(idx + "/uploads/".length); // home/filename.jpg
 
-      try {
-        await fs.unlink(filePath);
-        console.log("🗑️ فایل تصویر حذف شد:", filePath);
-      } catch {
-        console.warn("⚠️ فایل تصویر پیدا نشد یا قبلاً حذف شده بود:", filePath);
+      const { error: delError } = await supabaseServer.storage
+        .from("uploads")
+        .remove([objectPath]);
+
+      if (delError) {
+        console.warn("⚠️ Supabase remove warning:", delError);
+      } else {
+        console.log("🗑️ فایل تصویر از Supabase حذف شد:", objectPath);
       }
     }
 
