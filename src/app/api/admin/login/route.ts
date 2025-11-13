@@ -34,7 +34,7 @@ export async function POST(req: Request) {
           id: admin.id,
           email: admin.email,
           provider: admin.provider,
-          role: "admin", // 👈 نقش مدیر اضافه شد
+          role: "admin", // 👈 نقش  مدیر اضافه شد
         },
         secret,
         { expiresIn: remember ? "7d" : "1h" }
