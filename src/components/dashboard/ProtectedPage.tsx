@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 export interface AdminPayload {
   id: string;
   email: string;
+  role: string; // 👈 اضافه شد تا نقش مدیر هم داشته باشیم
   iat?: number;
   exp?: number;
 }
@@ -22,6 +23,12 @@ export default async function ProtectedPage({
 
   try {
     const admin = jwt.verify(token!, process.env.JWT_SECRET!) as AdminPayload;
+
+    // 👇 بررسی نقش مدیر
+    if (admin.role !== "admin") {
+      redirect("/dashboard/login");
+    }
+
     return <>{children(admin)}</>;
   } catch {
     redirect("/dashboard/login");

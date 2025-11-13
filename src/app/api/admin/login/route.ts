@@ -33,8 +33,8 @@ export async function POST(req: Request) {
         {
           id: admin.id,
           email: admin.email,
+          role: "admin", // 👈 نقش مدیر
           provider: admin.provider,
-          role: "admin", // 👈 نقش مدیر اضافه شد
         },
         secret,
         { expiresIn: remember ? "7d" : "1h" }
@@ -47,8 +47,8 @@ export async function POST(req: Request) {
 
       res.cookies.set("admin_token", token, {
         httpOnly: true,
-        sameSite: process.env.NODE_ENV === "production" ? "lax" : "lax",
         secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
         path: "/",
         maxAge: remember ? 60 * 60 * 24 * 7 : 60 * 60,
       });
@@ -76,7 +76,7 @@ export async function POST(req: Request) {
       {
         id: admin.id,
         email: admin.email,
-        role: "admin", // 👈 نقش مدیر اضافه شد
+        role: "admin", // 👈 نقش مدیر
       },
       secret,
       { expiresIn: remember ? "7d" : "1h" }
@@ -89,8 +89,8 @@ export async function POST(req: Request) {
 
     res.cookies.set("admin_token", token, {
       httpOnly: true,
-      sameSite: process.env.NODE_ENV === "production" ? "lax" : "lax",
       secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
       path: "/",
       maxAge: remember ? 60 * 60 * 24 * 7 : 60 * 60,
     });
