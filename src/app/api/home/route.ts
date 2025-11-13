@@ -42,7 +42,7 @@ export async function POST(req: Request) {
       const objectPath = `home/${Date.now()}-${safeName}`;
 
       const { error: uploadError } = await supabaseServer.storage
-        .from("uploads")
+        .from("gallery") // 👈 تغییر به اسم واقعی باکت
         .upload(objectPath, buffer, {
           contentType: file.type || "application/octet-stream",
           upsert: false,
@@ -57,7 +57,7 @@ export async function POST(req: Request) {
       }
 
       const { data: pub } = supabaseServer.storage
-        .from("uploads")
+        .from("gallery") // 👈 تغییر به اسم واقعی باکت
         .getPublicUrl(objectPath);
 
       imageUrl = pub?.publicUrl ?? null;

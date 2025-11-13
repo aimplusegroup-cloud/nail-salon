@@ -5,10 +5,10 @@ import { supabaseServer } from "@/lib/supabaseServer";
 // ---------------------- GET → دریافت یک آیتم ----------------------
 export async function GET(
   _req: Request,
-  context: { params: Promise<{ id: string }> } // 🔑 در Next.js 15 باید Promise باشد
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = await context.params; // 🔑 await لازم است
+    const { id } = await context.params;
 
     const item = await prisma.homeContent.findUnique({
       where: { id },
@@ -32,10 +32,7 @@ export async function GET(
 }
 
 // ---------------------- PUT → ویرایش آیتم ----------------------
-export async function PUT(
-  req: Request,
-  context: { params: Promise<{ id: string }> }
-) {
+export async function PUT(req: Request, context: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await context.params;
     const body = await req.json();
@@ -68,10 +65,7 @@ export async function PUT(
 }
 
 // ---------------------- DELETE → حذف آیتم ----------------------
-export async function DELETE(
-  _req: Request,
-  context: { params: Promise<{ id: string }> }
-) {
+export async function DELETE(_req: Request, context: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await context.params;
 
@@ -91,13 +85,12 @@ export async function DELETE(
     }
 
     // اگر تصویر در Supabase ذخیره شده باشد، حذفش کن
-    if (item.imageUrl && item.imageUrl.includes("/storage/v1/object/public/uploads/")) {
-      // URL عمومی Supabase شبیه: https://.../storage/v1/object/public/uploads/home/filename.jpg
-      const idx = item.imageUrl.indexOf("/uploads/");
-      const objectPath = item.imageUrl.slice(idx + "/uploads/".length); // home/filename.jpg
+    if (item.imageUrl && item.imageUrl.includes("/storage/v1/object/public/gallery/")) {
+      const idx = item.imageUrl.indexOf("/gallery/");
+      const objectPath = item.imageUrl.slice(idx + "/gallery/".length); // home/filename.jpg
 
       const { error: delError } = await supabaseServer.storage
-        .from("uploads")
+        .from("gallery") // 👈 تغییر به اسم واقعی باکت
         .remove([objectPath]);
 
       if (delError) {
