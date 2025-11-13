@@ -9,6 +9,7 @@ interface GalleryItem {
   title: string;
   description?: string | null;
   imageUrl: string;
+  source?: string; // supabase یا static
   createdAt: string;
 }
 
@@ -30,17 +31,28 @@ export default function GalleryPanel() {
 
   const [activeTab, setActiveTab] = useState<Tab>("upload");
 
+  // گرفتن لیست تصاویر
   useEffect(() => {
     const load = async () => {
       try {
         setFetching(true);
         const res = await fetch("/api/gallery", { cache: "no-store" });
         if (!res.ok) throw new Error(`API error ${res.status}`);
+
         const data = await res.json();
-        if (Array.isArray(data)) setItems(data);
-        else if (Array.isArray(data.items)) setItems(data.items);
-        else setItems([]);
-      } catch {
+        console.log("Gallery API response:", data);
+
+        if (Array.isArray(data)) {
+          setItems(data);
+        } else if (Array.isArray(data.items)) {
+          setItems(data.items);
+        } else if (Array.isArray(data.data)) {
+          setItems(data.data);
+        } else {
+          setItems([]);
+        }
+      } catch (err) {
+        console.error("Gallery fetch error:", err);
         toast.error("❌ خطا در دریافت داده‌ها");
         setItems([]);
       } finally {
@@ -50,6 +62,7 @@ export default function GalleryPanel() {
     load();
   }, []);
 
+  // پیش‌نمایش فایل انتخاب‌شده
   useEffect(() => {
     if (!file) {
       setPreview(null);
@@ -60,6 +73,7 @@ export default function GalleryPanel() {
     return () => URL.revokeObjectURL(url);
   }, [file]);
 
+  // آپلود عکس جدید
   const handleUpload = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!file) {
@@ -95,6 +109,7 @@ export default function GalleryPanel() {
     }
   };
 
+  // حذف عکس
   const handleDelete = async (id: string) => {
     if (!confirm("آیا از حذف این عکس مطمئن هستید؟")) return;
     try {
@@ -112,12 +127,14 @@ export default function GalleryPanel() {
     }
   };
 
+  // شروع ویرایش
   const startEdit = (item: GalleryItem) => {
     setEditId(item.id);
     setEditTitle(item.title);
     setEditDescription(item.description || "");
   };
 
+  // ذخیره تغییرات
   const handleUpdate = async (id: string) => {
     try {
       const res = await fetch(`/api/gallery/${id}`, {
@@ -196,8 +213,10 @@ export default function GalleryPanel() {
             </div>
           ) : (
             <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
-              {items.length === 0 && (
-                <p className="text-gray-500 col-span-full text-center">هنوز عکسی ثبت نشده است.</p>
+                           {items.length === 0 && (
+                <p className="text-gray-500 col-span-full text-center">
+                  هنوز عکسی ثبت نشده است.
+                </p>
               )}
               {items.map((it) => (
                 <div key={it.id} className="card p-2 flex flex-col">
@@ -216,7 +235,7 @@ export default function GalleryPanel() {
                         rows={2}
                         placeholder="توضیحات"
                       />
-                                            <div className="flex gap-2 mt-2">
+                      <div className="flex gap-2 mt-2">
                         <button
                           onClick={() => handleUpdate(it.id)}
                           className="cta-primary flex-1"
