@@ -27,7 +27,7 @@ export default async function GalleryPage() {
     console.error("❌ Error fetching /api/gallery:", err);
   }
 
-  // ✅ Fallback استاتیک با توجه به فایل‌های موجود در public/image
+  // ✅ همه‌ی عکس‌های استاتیک موجود در public/image
   const staticItems: GalleryItem[] = [
     { id: "s1", title: "نمونه 1", imageUrl: "/image/1.jfif" },
     { id: "s2", title: "نمونه 2", imageUrl: "/image/2.jfif" },
@@ -93,17 +93,16 @@ export default async function GalleryPage() {
     { id: "S4", title: "نمونه S4", imageUrl: "/image/S4.jpg" },
   ];
 
-    return (
+  return (
     <section className="section space-y-12">
-      {/* عنوان صفحه */}
-      <h1 className="section-title text-center">گالری نمونه‌کارها</h1>
+            <h1 className="section-title text-center">گالری نمونه‌کارها</h1>
       <p className="section-subtitle text-center max-w-2xl mx-auto">
         مجموعه‌ای از جدیدترین و محبوب‌ترین طراحی‌های سالن ناخن نازی برای الهام گرفتن
         و انتخاب استایل دلخواه شما
       </p>
 
-      {/* گالری */}
-      <GalleryClient items={items.length > 0 ? items : staticItems} />
+      {/* گالری ترکیبی: هم دیتابیس و هم استاتیک */}
+      <GalleryClient items={[...items, ...staticItems]} />
 
       {/* دکمه‌های ناوبری پایین صفحه */}
       <div className="flex flex-wrap justify-center gap-4 mt-12">
